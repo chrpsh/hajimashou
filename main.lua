@@ -31,32 +31,18 @@ function love.load()
 
 	rand_chance = 0
 
+	--crit = {a='', b=''}
+	crit = {}
+	crit.a = 0
+	crit.b = 0
+	--crit.a = {}
+	--crit.b = {}
+
 	crit_check = {}
 	crit_check_counter = {}
-	ch = false
+	ch = 0
 
 	math.randomseed(os.time())
-
-	--start = false
-
-	--tick.delay(function() start = true end, .6)
-
-	--if start then
-		--[[tick.recur(function() 
-			if unit[0].hp > 0 and unit[1].hp > 0 then
-				if showresult then
-					nextturn()
-					showresult = false
-				end
-				if (turn % 2 == 0) then
-					attack(1, 0)
-				else
-					attack(0, 1)
-				end
-				showresult = true
-			end
-		 end, .6)]]
-	--end
 end
 
 
@@ -99,9 +85,20 @@ function attack(a, b)
 	--/log
 
 	--chance of crit
-	if not log.crit.a[turn] then
+	if not unit[a].log.crit then
+	--if not log.crit.a[turn] then
 		ch = chance(.2)
-		log.crit.a[turn] = true
+		unit[a].log.crit = true
+		--log.crit.a[turn] = true
+		--crit[a][turn] = true
+		unit[a].crit = chance(.2)
+		unit[b].crit = chance(.2)
+		--crit.a = chance(.2)
+		--crit.b = chance(.2)
+		--crit[a] = ch --chance(.2)
+		--crit[b] = ch --chance(.2)
+		--crit.a[step] = chance(.2)
+		--crit.b[step] = chance(.2)
 	end
 	--/
 
@@ -143,9 +140,9 @@ end
 
 function whosemove()
 	if (turn % 2 == 0) then
-		return 1, 0
-	else
 		return 0, 1
+	else
+		return 1, 0
 	end
 end
 
@@ -264,6 +261,52 @@ function love.draw()
 	for i=0,table.getn(unit) do
 		unit[i]:draw()
 	end
+
+	local a,b = whosemove()
+	
+	--[[if log.crit.a[turn] then
+		love.graphics.print('log.crit.a: true', window_width/2, window_height/2-28)
+	else
+		love.graphics.print('log.crit.a: false', window_width/2, window_height/2-28)
+	end]]
+
+	if unit[a].log.crit then
+		love.graphics.print('unit[a].log.crit: true', window_width/2, window_height/2-28)
+	else
+		love.graphics.print('unit[a].log.crit: false', window_width/2, window_height/2-28)
+	end
+
+	--[[if ch then
+		love.graphics.print('ch: true', window_width/2, window_height/2-14)
+	else
+		love.graphics.print('ch: false', window_width/2, window_height/2-14)
+	end]]
+
+	--love.graphics.print('ch: ' .. ch, window_width/2, window_height/2-14)
+	--love.graphics.print('crit.a: ' .. crit.a, window_width/2, window_height/2-14*4)
+	--love.graphics.print('crit.a: ' .. unit[a].log.crit, window_width/2, window_height/2+14*4)
+	--love.graphics.print('crit.b: ' .. crit.b, window_width/2, window_height/2-14*5)
+
+	--[[if crit.a then
+		love.graphics.print('crit.a: true', window_width/2, window_height/2+14)
+	else
+		love.graphics.print('crit.a: false', window_width/2, window_height/2+14)
+	end
+
+	if crit.b then
+		love.graphics.print('crit.b: true', window_width/2, window_height/2+28)
+	else
+		love.graphics.print('crit.b: false', window_width/2, window_height/2+28)
+	end]]
+
+	
+	love.graphics.print(unit[b].att+unit[b].att*2*ch, window_width/2, window_height/2+28*2)
+	
+
+	--[[if crit[a] ~= nil and crit[b] ~= nil then
+		love.graphics.print('crit[a]: ' .. crit[a], window_width/2, window_height/2)
+		love.graphics.print('crit[b]: ' .. crit[b], window_width/2, window_height/2+14)
+	end]]
 
 	showstatus()
 end

@@ -16,7 +16,7 @@ function Unit:new(num, name)
 	self.def = math.random(1,2)
 	self.sad = math.random(0,1)
 	self.irr = math.random(0,1)
-	--self.crit = math.random()
+	self.crit = 0
 	
 	--self.talk = {'KISAMA', 'MASAKA', 'TATAKAE', 'SHINEE', 'KUROSU', 'ARA ARA', 'SATTE TO', 'HAJIMEMASHOU', 'WARUKATTA', 'SHIMATTA', 'YARE YARE', 'AHO', 'BAKA'}
 
@@ -26,6 +26,7 @@ function Unit:new(num, name)
 	self.log.def = {}
 	self.log.sad = {}
 	self.log.irr = {}
+	self.log.crit = {}
 end
 
 
