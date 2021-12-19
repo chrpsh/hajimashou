@@ -189,39 +189,18 @@ function showstatus()
 
 		printstr('TURN ' .. turn, 3, 'bttm')
 
-		--wel huh
-
-		--local t_str = 'TURN ' .. turn
-		--local t_x = getcenter(t_str)
-		--love.graphics.print(t_str, t_x, window_height-14*3)
-		
-		--[[local n_str = unit[a].name .. ' →→ ' .. unit[b].name
-		local n_x = getcenter(n_str)
-		love.graphics.print(n_str, n_x, 0)]]
-
 		printstr(unit[a].name .. ' →→ ' .. unit[b].name, 0, 'top')
 
 		if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
 		
-			--[[local dmg_str = hp_diff .. ' DMG'
-			local dmg_str_cr = hp_diff .. ' DMG (CRITICAL)'
-
-			local dmg_x = getcenter(dmg_str)
-			local dmg_x_cr = getcenter(dmg_str_cr)]]
-
 			if ch ~= 1 then
 				printstr(hp_diff .. ' DMG', 1, 'top')
-				--love.graphics.print(dmg_str_cr, dmg_x_cr, 14)
 			else
 				printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
-				--love.graphics.print(dmg_str, dmg_x, 14)
 			end
 
-			--local a,b = whosemove()
 			if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
-				--local c_str = '←← COUNTER ←←'
-				--local c_x = getcenter(c_str)
-				--love.graphics.print(c_str, c_x, 14*3)
+
 				printstr('←← COUNTER ←←', 3, 'top')
 
 				local hp_diff_2 = 0
@@ -232,69 +211,20 @@ function showstatus()
 
 				printstr(hp_diff_2 .. ' DMG', 4, 'top')
 
-				--local c_f_str = '← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD'
-				--local c_f_x = getcenter(c_f_str) 
 				printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
-				--love.graphics.print(c_f_str, c_f_x, window_height-14)
 			end
-
-			--[[if unit[b].def >= unit[a].def and unit[b].hp > 0 and unit[a].hp > 0 then
-				local c_str = '←← COUNTER ←←'
-				local c_x = getcenter(c_str)
-				love.graphics.print(c_str, c_x, 14*3)
-				
-				local c_hp_diff = 0
-				if unit[a].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
-					c_hp_diff = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
-				end
-
-				local c_dmg_str = c_hp_diff .. ' DMG'
-				local c_dmg_x = getcenter(c_dmg_str)
-
-				love.graphics.print(c_dmg_str, c_dmg_x, 14*4)
-
-				local c_f_str = '← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD'
-				local c_f_x = getcenter(c_f_str) 
-				love.graphics.print(c_f_str, c_f_x, window_height-14)
-			end]]
-
-			--[[local f_str_cr = '→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD'
-			local f_str = '→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD'
-
-			local f_x_cr = getcenter(f_str_cr)
-			local f_x = getcenter(f_str)]]
 
 			if ch ~= 1 then
 				printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
-				--love.graphics.print(f_str_cr, f_x_cr, window_height-14*2)
 			else
 				printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
-				--love.graphics.print(f_str, f_x, window_height-14*2)
 			end
 		end
-
-		--[[local att_diff = 0
-		local def_diff = 0
-
-		if unit[a].log.att[turn-1] ~= nil and unit[a].log.att[turn] ~= nil then
-			att_diff = unit[a].log.att[turn] - unit[a].log.att[turn-1]
-		end
-
-		if unit[b].log.def[turn-1] ~= nil and unit[b].log.def[turn] ~= nil then
-			def_diff = unit[b].log.def[turn] - unit[b].log.def[turn-1]
-		end]]
-
-		--[[local d_str = unit[b].name .. ' DIED'
-		local d_2_str = unit[b].name .. ' DIED'
-		local d_x = (window_width - comm:getWidth(d_str))/2
-		local d_2_x = (window_width - comm:getWidth(d_str))/2]]
 		
 		if unit[b].hp <= 0 then
 			printstr(unit[b].name .. ' DIED', 2, 'top')
-			--love.graphics.print(d_str, d_x, 14*2)
 		elseif unit[b].hp <= 0 then
 			printstr(unit[b].name .. ' DIED', 2, 'top')
-			--love.graphics.print(d_2_str, d_2_x, 14*2)
 		end
 	end
 end
@@ -309,19 +239,14 @@ function love.keypressed(key)
 	if key == "space" then
 		love.load()
 	elseif key == "return" then
-		--start = true
-		--autoplay()
 		if showresult then
 			nextturn()
 			showresult = false
 		end
-		--local a = 0
-		--local b = 1
 		local a,b = whosemove()
 		if unit[a].hp > 0 and unit[b].hp > 0 then
 			attack(b, a)
 			if iscounter() then
-			--if unit[b].def >= unit[a].def then
 				attack(a, b)
 			end
 			showresult = true
