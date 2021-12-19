@@ -189,6 +189,8 @@ function showstatus()
 
 		printstr('TURN ' .. turn, 3, 'bttm')
 
+		--wel huh
+
 		--local t_str = 'TURN ' .. turn
 		--local t_x = getcenter(t_str)
 		--love.graphics.print(t_str, t_x, window_height-14*3)
