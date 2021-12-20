@@ -85,14 +85,15 @@ function attack(a, b)
 	--/log
 
 	--chance of crit
-	if not unit[a].log.crit then
+	if not unit[a].log.crit[turn] then
 	--if not log.crit.a[turn] then
-		ch = chance(.2)
-		unit[a].log.crit = true
+		--ch = chance(.2)
+		unit[a].crit = chance(.2)
+		unit[a].log.crit[turn] = true
 		--log.crit.a[turn] = true
 		--crit[a][turn] = true
-		unit[a].crit = chance(.2)
-		unit[b].crit = chance(.2)
+		--unit[a].crit = chance(.2)
+		--unit[b].crit = chance(.2)
 		--crit.a = chance(.2)
 		--crit.b = chance(.2)
 		--crit[a] = ch --chance(.2)
@@ -103,7 +104,7 @@ function attack(a, b)
 	--/
 
 	--calculating damage
-	local dmg = unit[a].att + unit[a].att*2*ch - unit[b].def - unit[a].sad
+	local dmg = unit[a].att + unit[a].att*2*unit[a].crit - unit[b].def - unit[a].sad
 
 	if dmg < 0 then
 		dmg = 0
@@ -140,9 +141,9 @@ end
 
 function whosemove()
 	if (turn % 2 == 0) then
-		return 0, 1
-	else
 		return 1, 0
+	else
+		return 0, 1
 	end
 end
 
@@ -175,9 +176,11 @@ end
 
 function showstatus()
 	if showresult then
-		local a = log.moves.a[turn]
-		local b = log.moves.b[turn]
+		--local a = log.moves.a[turn]
+		--local b = log.moves.b[turn]
 	
+		local a,b = whosemove()
+
 		local hp_diff = 0
 
 		if unit[b].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
@@ -190,7 +193,7 @@ function showstatus()
 
 		if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
 		
-			if ch ~= 1 then
+			if unit[a].crit ~= 1 then
 				printstr(hp_diff .. ' DMG', 1, 'top')
 			else
 				printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
@@ -206,12 +209,21 @@ function showstatus()
 					hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
 				end
 
-				printstr(hp_diff_2 .. ' DMG', 4, 'top')
+				if unit[b].crit ~= 1 then
+					printstr(hp_diff_2 .. ' DMG', 4, 'top')
+				else
+					printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+				end
 
-				printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+				--printstr(hp_diff_2 .. ' DMG', 4, 'top')
+				if unit[b].crit ~= 1 then
+					printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+				else
+					printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+				end
 			end
 
-			if ch ~= 1 then
+			if unit[a].crit ~= 1 then
 				printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
 			else
 				printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
@@ -220,8 +232,8 @@ function showstatus()
 		
 		if unit[b].hp <= 0 then
 			printstr(unit[b].name .. ' DIED', 2, 'top')
-		elseif unit[b].hp <= 0 then
-			printstr(unit[b].name .. ' DIED', 2, 'top')
+		elseif unit[a].hp <= 0 then
+			printstr(unit[a].name .. ' DIED', 2, 'top')
 		end
 	end
 end
@@ -229,7 +241,7 @@ end
 
 function iscounter()
 	local a,b = whosemove()
-	return unit[b].def > unit[a].def
+	return unit[b].def >= unit[a].def
 end
 
 function love.keypressed(key)
@@ -242,9 +254,9 @@ function love.keypressed(key)
 		end
 		local a,b = whosemove()
 		if unit[a].hp > 0 and unit[b].hp > 0 then
-			attack(b, a)
+			attack(a, b)
 			if iscounter() then
-				attack(a, b)
+				attack(b, a)
 			end
 			showresult = true
 		end
@@ -263,17 +275,27 @@ function love.draw()
 	end
 
 	local a,b = whosemove()
-	
+
 	--[[if log.crit.a[turn] then
 		love.graphics.print('log.crit.a: true', window_width/2, window_height/2-28)
 	else
 		love.graphics.print('log.crit.a: false', window_width/2, window_height/2-28)
 	end]]
 
-	if unit[a].log.crit then
-		love.graphics.print('unit[a].log.crit: true', window_width/2, window_height/2-28)
+	love.graphics.print('turn 	' .. turn, window_width/2, window_height/2-14*7)
+	love.graphics.print('a: 	' .. unit[a].name, window_width/2, window_height/2-14*6)
+	love.graphics.print('b: 	' .. unit[b].name, window_width/2, window_height/2-14*5)
+
+	if unit[a].log.crit[turn] then
+		love.graphics.print('a.log.cr[' .. turn .. ']: 	true', window_width/2, window_height/2-14*3)
 	else
-		love.graphics.print('unit[a].log.crit: false', window_width/2, window_height/2-28)
+		love.graphics.print('a.log.cr[' .. turn .. ']: 	false', window_width/2, window_height/2-14*3)
+	end
+
+	if unit[b].log.crit[turn] then
+		love.graphics.print('b.log.cr[' .. turn .. ']: 	true', window_width/2, window_height/2-28)
+	else
+		love.graphics.print('b.log.cr[' .. turn .. ']: 	false', window_width/2, window_height/2-28)
 	end
 
 	--[[if ch then
@@ -282,7 +304,13 @@ function love.draw()
 		love.graphics.print('ch: false', window_width/2, window_height/2-14)
 	end]]
 
-	--love.graphics.print('ch: ' .. ch, window_width/2, window_height/2-14)
+	love.graphics.print('a.crit: 	' .. unit[a].crit, window_width/2, window_height/2)
+	love.graphics.print('b.crit: 	' .. unit[b].crit, window_width/2, window_height/2+14)
+	
+	
+
+	--love.graphics.print('ch: ' .. ch, window_width/2, window_height/2+14*3)
+	love.graphics.print('rand: ' .. rand_chance, window_width/2, window_height/2+14*4)
 	--love.graphics.print('crit.a: ' .. crit.a, window_width/2, window_height/2-14*4)
 	--love.graphics.print('crit.a: ' .. unit[a].log.crit, window_width/2, window_height/2+14*4)
 	--love.graphics.print('crit.b: ' .. crit.b, window_width/2, window_height/2-14*5)
@@ -300,7 +328,8 @@ function love.draw()
 	end]]
 
 	
-	love.graphics.print(unit[b].att+unit[b].att*2*ch, window_width/2, window_height/2+28*2)
+	love.graphics.print('a.att: ' .. unit[a].att + unit[a].att*2*unit[a].crit, window_width/2, window_height/2+14*7)
+	love.graphics.print('b.att: ' .. unit[b].att + unit[b].att*2*unit[b].crit, window_width/2, window_height/2+14*8)
 	
 
 	--[[if crit[a] ~= nil and crit[b] ~= nil then
