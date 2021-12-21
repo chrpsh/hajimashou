@@ -10,7 +10,7 @@ function love.load()
 	unit = {}
 	
 	local names = {
-	[0]='XÆA-12', 'RX-78-2'}
+	[0]='XÆA-12', 'RX-78-2'--[[, 'A-17', 'L83644KDR', 'EX41285', 'X1234SSX', 'ELTH-B03', '00475-AEDF-2']]}
 
 	for i=0,1 do
 		unit[i] = Unit(i, names[i])
@@ -32,15 +32,21 @@ function love.load()
 	rand_chance = 0
 
 	--crit = {a='', b=''}
-	crit = {}
-	crit.a = 0
-	crit.b = 0
+	--crit = {}
+	--crit.a = 0
+	--crit.b = 0
 	--crit.a = {}
 	--crit.b = {}
 
-	crit_check = {}
-	crit_check_counter = {}
-	ch = 0
+	--crit_check = {}
+	--crit_check_counter = {}
+	--ch = 0
+
+	rand_names = {}
+
+	for i=0,11 do
+		rand_names[i] = givemename()
+	end
 
 	math.randomseed(os.time())
 end
@@ -238,6 +244,22 @@ function showstatus()
 	end
 end
 
+function givemename()
+	--XÆA-12
+	--RX-78-2
+
+	local char = string.char(math.random(65,90))
+	local char = char .. string.char(math.random(65,90))
+	local num = math.random(0,9)
+	local num = num .. math.random(0,9)
+	local num_last = math.random(0,9)
+
+	return char .. '-' .. num .. '-' .. num_last
+
+	--caps letter
+	--string.char(math.random(65,90))
+	--
+end
 
 function iscounter()
 	local a,b = whosemove()
@@ -282,6 +304,58 @@ function love.draw()
 		love.graphics.print('log.crit.a: false', window_width/2, window_height/2-28)
 	end]]
 
+	--love.graphics.print('Æ Ħ Ø Œ ẞ Ə Ŧ Њ Ђ Ө * # $ ¥ @ & ¶ § † ‡ ≤', window_width/4, window_height/2)
+	--love.graphics.print('Æ Ø Œ Ө', window_width/4, window_height/2+14)
+	--love.graphics.print('†', window_width/4, window_height/2+14*3)
+
+	--35—38, 64, 146, 157, 
+	--[[local sp = {35, 36, 37, 38, 64, 146, 157}
+	local sp_l = table.getn(sp)
+	local sp_r = math.random(0,sp_l)
+
+	local str = string.char(math.random(65,90))
+
+	--local char = string.char(sp[sp_r])
+
+	local num = math.random(00,99)]]
+
+	local char_1 = {}
+	local char_2 = {}
+	local char_3 = {}
+
+	--if not wedidit then
+		for i=0,10 do
+			char_1[i] = string.char(math.random(65,90))
+			char_2[i] = string.char(math.random(35,38))
+			char_3[i] = math.random(00,99)
+			--if i == 10 then
+			--	wedidit = true
+			--end
+		end
+	--end
+
+	--if wedidit then
+		for i=0,10 do
+			if char_1[i] ~= nil and char_2[i] ~= nil and char_3[i] ~= nil then
+			love.graphics.print('†	' .. char_1[i] .. 
+				char_2[i] .. '-' .. 
+				char_3[i], window_width/4, window_height/2+14*i)
+			--love.graphics.print('†	' .. string.char(math.random(65,90)) .. string.char(math.random(35,38)) .. '-' .. math.random(00,99), window_width/4, window_height/2+14*i)
+			end
+		end
+	--end
+
+
+	--love.graphics.print(string.char(math.random(65,90)) .. string.char(math.random(35,38)), window_width/4, window_height/2+14)
+	
+	for i,v in ipairs(rand_names) do
+		love.graphics.print(rand_names[i], window_width/3*2, window_height/2+14*i-14)
+	end
+	--love.graphics.print(math.random(00,99), window_width/2, window_height/2+14)
+
+	--[[ STATUS LOG
+
+	
 	love.graphics.print('turn 	' .. turn, window_width/2, window_height/2-14*7)
 	love.graphics.print('a: 	' .. unit[a].name, window_width/2, window_height/2-14*6)
 	love.graphics.print('b: 	' .. unit[b].name, window_width/2, window_height/2-14*5)
@@ -298,19 +372,22 @@ function love.draw()
 		love.graphics.print('b.log.cr[' .. turn .. ']: 	false', window_width/2, window_height/2-28)
 	end
 
+	love.graphics.print('a.crit: 	' .. unit[a].crit, window_width/2, window_height/2)
+	love.graphics.print('b.crit: 	' .. unit[b].crit, window_width/2, window_height/2+14)
+	love.graphics.print('a.att: ' .. unit[a].att + unit[a].att*2*unit[a].crit, window_width/2, window_height/2+14*3)
+	love.graphics.print('b.att: ' .. unit[b].att + unit[b].att*2*unit[b].crit, window_width/2, window_height/2+14*4)
+
+	]]
+
 	--[[if ch then
 		love.graphics.print('ch: true', window_width/2, window_height/2-14)
 	else
 		love.graphics.print('ch: false', window_width/2, window_height/2-14)
 	end]]
-
-	love.graphics.print('a.crit: 	' .. unit[a].crit, window_width/2, window_height/2)
-	love.graphics.print('b.crit: 	' .. unit[b].crit, window_width/2, window_height/2+14)
-	
 	
 
 	--love.graphics.print('ch: ' .. ch, window_width/2, window_height/2+14*3)
-	love.graphics.print('rand: ' .. rand_chance, window_width/2, window_height/2+14*4)
+	--love.graphics.print('rand: ' .. rand_chance, window_width/2, window_height/2+14*4)
 	--love.graphics.print('crit.a: ' .. crit.a, window_width/2, window_height/2-14*4)
 	--love.graphics.print('crit.a: ' .. unit[a].log.crit, window_width/2, window_height/2+14*4)
 	--love.graphics.print('crit.b: ' .. crit.b, window_width/2, window_height/2-14*5)
@@ -326,10 +403,6 @@ function love.draw()
 	else
 		love.graphics.print('crit.b: false', window_width/2, window_height/2+28)
 	end]]
-
-	
-	love.graphics.print('a.att: ' .. unit[a].att + unit[a].att*2*unit[a].crit, window_width/2, window_height/2+14*7)
-	love.graphics.print('b.att: ' .. unit[b].att + unit[b].att*2*unit[b].crit, window_width/2, window_height/2+14*8)
 	
 
 	--[[if crit[a] ~= nil and crit[b] ~= nil then
