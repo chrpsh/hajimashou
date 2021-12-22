@@ -20,6 +20,7 @@ function Unit:new(num, name)
 	self.att = math.random(3,5)
 	self.def = math.random(1,2)
 	self.sad = math.random(0,1)
+	--self.anx = math.random(0,1)
 	self.irr = math.random(0,1)
 	self.crit = 0
 	
@@ -30,6 +31,7 @@ function Unit:new(num, name)
 	self.log.att = {}
 	self.log.def = {}
 	self.log.sad = {}
+	--self.log.anx = {}
 	self.log.irr = {}
 	self.log.crit = {}
 end
@@ -80,6 +82,7 @@ function Unit:draw()
 		end
 
 		love.graphics.print('SAD ' .. self.sad, self.x, self.y+14*4)
+		--love.graphics.print('ANX ' .. self.anx, self.x, self.y+14*4)
 		--love.graphics.print('IRR ' .. self.irr, self.x, self.y+14*5)
 
 		--love.graphics.print('DEF ' .. self.hp, self.x, 14*1)
