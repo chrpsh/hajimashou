@@ -121,6 +121,11 @@ function attack(a, b)
 
 	--doing attack on victim's hp
 	unit[b].hp = unit[b].hp - dmg
+
+	if unit[a].crit == 1 then
+		getirritated(b)
+	end
+
 	--/
 
 	--log
@@ -131,6 +136,7 @@ function attack(a, b)
 
 	unit[b].log.hp[turn] = unit[b].hp
 	unit[b].log.def[turn] = unit[b].def
+	
 	--unit[b].log.att[turn] = unit[b].att
 	--unit[b].log.sad[turn] = unit[b].sad
 
@@ -138,6 +144,17 @@ function attack(a, b)
 	--log.moves.b[turn] = b
 end
 
+function getanxious(a,b)
+	unit[b].log.anx[turn-1] = unit[b].anx
+	unit[b].anx = unit[b].anx + .1
+	unit[b].log.anx[turn] = unit[b].anx
+end
+
+function getirritated(b)
+	unit[b].log.irr[turn-1] = unit[b].irr
+	unit[b].irr = unit[b].irr + .1
+	unit[b].log.irr[turn] = unit[b].irr
+end
 
 function getcenter(str)
 	return (window_width - comm:getWidth(str))/2
@@ -197,45 +214,54 @@ function showstatus()
 
 		printstr('TURN ' .. turn, 3, 'bttm')
 
+		--ismissed()
+		--printstr('is missed: ' .. unit[a].miss, 13, 'bttm')
+
+		
 		printstr(unit[a].name .. ' →→ ' .. unit[b].name, 0, 'top')
 
-		if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
-		
-			if unit[a].crit ~= 1 then
-				printstr(hp_diff .. ' DMG', 1, 'top')
-			else
-				printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
-			end
+		if ismissed() ~= 1 then
 
-			if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
-
-				printstr('←← COUNTER ←←', 3, 'top')
-
-				local hp_diff_2 = 0
-				
-				if unit[a].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
-					hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
-				end
-
-				if unit[b].crit ~= 1 then
-					printstr(hp_diff_2 .. ' DMG', 4, 'top')
+			if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
+			
+				if unit[a].crit ~= 1 then
+					printstr(hp_diff .. ' DMG', 1, 'top')
 				else
-					printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+					printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
 				end
 
-				--printstr(hp_diff_2 .. ' DMG', 4, 'top')
-				if unit[b].crit ~= 1 then
-					printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+				if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+
+					printstr('←← COUNTER ←←', 3, 'top')
+
+					local hp_diff_2 = 0
+					
+					if unit[a].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
+						hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
+					end
+
+					if unit[b].crit ~= 1 then
+						printstr(hp_diff_2 .. ' DMG', 4, 'top')
+					else
+						printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+					end
+
+					--printstr(hp_diff_2 .. ' DMG', 4, 'top')
+					if unit[b].crit ~= 1 then
+						printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					else
+						printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					end
+				end
+
+				if unit[a].crit ~= 1 then
+					printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
 				else
-					printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
 				end
 			end
-
-			if unit[a].crit ~= 1 then
-				printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
-			else
-				printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
-			end
+		else
+			printstr('MISS', 1, 'top')
 		end
 		
 		if unit[b].hp <= 0 then
@@ -268,6 +294,15 @@ function iscounter()
 	return unit[b].def >= unit[a].def
 end
 
+function ismissed()
+	local a,b = whosemove()
+	if not unit[a].log.miss[turn] then
+		unit[a].miss = chance(unit[a].irr)
+		unit[a].log.miss[turn] = true
+	end
+	return unit[a].miss
+end
+
 function love.keypressed(key)
 	if key == "space" then
 		love.load()
@@ -278,9 +313,12 @@ function love.keypressed(key)
 		end
 		local a,b = whosemove()
 		if unit[a].hp > 0 and unit[b].hp > 0 then
-			attack(a, b)
-			if iscounter() then
-				attack(b, a)
+			if ismissed() == 0 then
+				attack(a, b)
+				if iscounter() then
+					attack(b, a)
+					getanxious(b, a)
+				end
 			end
 			showresult = true
 		end
