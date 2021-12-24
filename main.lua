@@ -82,14 +82,27 @@ function chance(x)
 	end
 end
 
+function writelogs_before(a,b)
+	unit[a].log.att[turn-1] = unit[a].att
+	unit[a].log.sad[turn-1] = unit[a].sad
+	unit[b].log.hp[turn-1] = unit[b].hp
+	unit[b].log.def[turn-1] = unit[b].def
+end
+
+function writelogs_after(a,b)
+	unit[a].log.att[turn] = unit[a].att
+	unit[a].log.sad[turn] = unit[a].sad
+	unit[b].log.hp[turn] = unit[b].hp
+	unit[b].log.def[turn] = unit[b].def
+end
 
 function attack(a, b)
 	--log
-	unit[a].log.att[turn-1] = unit[a].att
+	--[[unit[a].log.att[turn-1] = unit[a].att
 	unit[a].log.sad[turn-1] = unit[a].sad
 
 	unit[b].log.hp[turn-1] = unit[b].hp
-	unit[b].log.def[turn-1] = unit[b].def
+	unit[b].log.def[turn-1] = unit[b].def]]
 	--/log
 
 	--chance of crit
@@ -131,11 +144,11 @@ function attack(a, b)
 	--log
 	--unit[a].log.hp[turn] = unit[a].hp
 	--unit[a].log.def[turn] = unit[a].def	
-	unit[a].log.att[turn] = unit[a].att
+	--[[unit[a].log.att[turn] = unit[a].att
 	unit[a].log.sad[turn] = unit[a].sad
 
 	unit[b].log.hp[turn] = unit[b].hp
-	unit[b].log.def[turn] = unit[b].def
+	unit[b].log.def[turn] = unit[b].def]]
 	
 	--unit[b].log.att[turn] = unit[b].att
 	--unit[b].log.sad[turn] = unit[b].sad
@@ -199,7 +212,7 @@ function printstr(str, num, pos)
 	end
 end
 
-function showstatus()
+function showstatus_old()
 	if showresult then
 		--local a = log.moves.a[turn]
 		--local b = log.moves.b[turn]
@@ -216,21 +229,59 @@ function showstatus()
 
 		--ismissed()
 		--printstr('is missed: ' .. unit[a].miss, 13, 'bttm')
-
 		
 		printstr(unit[a].name .. ' →→ ' .. unit[b].name, 0, 'top')
 
-		if ismissed() ~= 1 then
-
-			if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
-			
+		if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
+			--main attack
+			if ismissed(a) ~= 1 then
+				--if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
+				
 				if unit[a].crit ~= 1 then
 					printstr(hp_diff .. ' DMG', 1, 'top')
 				else
 					printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
 				end
 
-				if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+					--[[if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+
+						printstr('←← COUNTER ←←', 3, 'top')
+
+						local hp_diff_2 = 0
+						
+						if unit[a].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
+							hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
+						end
+
+						if unit[b].crit ~= 1 then
+							printstr(hp_diff_2 .. ' DMG', 4, 'top')
+						else
+							printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+						end
+
+						--printstr(hp_diff_2 .. ' DMG', 4, 'top')
+						if unit[b].crit ~= 1 then
+							printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+						else
+							printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+						end
+					end]]
+
+				if unit[a].crit ~= 1 then
+					printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
+				else
+					printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
+				end
+				--end
+			else
+				printstr('MISS', 1, 'top')
+				printstr(hp_diff .. ' DMG', 2, 'top')
+			end
+
+			--counter
+
+			if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+				if ismissed(b) ~= 1 then
 
 					printstr('←← COUNTER ←←', 3, 'top')
 
@@ -252,23 +303,136 @@ function showstatus()
 					else
 						printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
 					end
-				end
-
-				if unit[a].crit ~= 1 then
-					printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
 				else
-					printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
+					printstr('←← COUNTER ←←', 3, 'top')
+					printstr('MISS', 4, 'top')
 				end
 			end
-		else
-			printstr('MISS', 1, 'top')
 		end
+
+		--[[if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+
+			if ismissed(b) ~= 1 then
+
+					printstr('←← COUNTER ←←', 3, 'top')
+
+					local hp_diff_2 = 0
+					
+					if unit[a].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
+						hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
+					end
+
+					if unit[b].crit ~= 1 then
+						printstr(hp_diff_2 .. ' DMG', 4, 'top')
+					else
+						printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+					end
+
+					--printstr(hp_diff_2 .. ' DMG', 4, 'top')
+					if unit[b].crit ~= 1 then
+						printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					else
+						printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					end
+				end]]
 		
 		if unit[b].hp <= 0 then
 			printstr(unit[b].name .. ' DIED', 2, 'top')
 		elseif unit[a].hp <= 0 then
 			printstr(unit[a].name .. ' DIED', 2, 'top')
 		end
+	end
+end
+
+function isnill()
+	local a,b = whosemove()
+	return unit[a].log.att[turn-1] ~= nil, unit[b].log.def[turn-1] ~= nil, unit[a].log.sad[turn-1] ~= nil
+end
+
+function showstatus()
+	if showresult then	
+		local a,b = whosemove()
+		local hp_diff = 0
+
+		if unit[b].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
+			hp_diff = unit[b].log.hp[turn-1] - unit[b].log.hp[turn]
+		end
+
+		--top
+		printstr(unit[a].name .. ' →→ ' .. unit[b].name, 0, 'top')
+		--if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
+		local nill1, nill2, nill3 = isnill()
+		local nillsum = nill1 and nill2 and nill3
+		if nillsum then
+			if ismissed(a) == 0 then
+				--show attack
+				if unit[a].crit ~= 1 then
+					printstr(hp_diff .. ' DMG', 1, 'top')
+				else
+					printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
+				end
+
+				if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+					printstr('←← COUNTER ←←', 3, 'top')
+					local hp_diff_2 = 0
+					if unit[a].log.hp[turn-1] ~= nil and unit[a].log.hp[turn] ~= nil then
+						hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
+					end
+
+					if ismissed(b) == 0 then
+						if unit[b].crit ~= 1 then
+							printstr(hp_diff_2 .. ' DMG', 4, 'top')
+						else
+							printstr(hp_diff_2 .. ' DMG (CRITICAL)', 4, 'top')
+						end
+						--show counter dmg
+					else
+						printstr('MISS', 4, 'top')
+						--show miss
+					end
+				end
+			else
+				printstr('MISS', 1, 'top')
+				--printstr(hp_diff .. ' DMG', 2, 'top')
+			end
+		else
+			if nill1 then
+				printstr('OK', 2, 'top') else printstr('NIL', 2, 'top')
+			end
+			if nill2 then
+				printstr('OK', 3, 'top') else printstr('NIL', 3, 'top')
+			end
+			if nill3 then
+				printstr('OK', 4, 'top') else printstr('NIL', 4, 'top')
+			end
+		end
+		if unit[b].hp <= 0 then
+			printstr(unit[b].name .. ' DIED', 2, 'top')
+		elseif unit[a].hp <= 0 then
+			printstr(unit[a].name .. ' DIED', 2, 'top')
+		end
+		--/top
+
+		--bottom
+		printstr('TURN ' .. turn, 3, 'bttm')
+
+		if ismissed(a) == 0 then
+			if unit[a].crit == 0 then
+				printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
+			else
+				printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. unit[a].log.sad[turn-1] .. ' SAD', 2, 'bttm')
+			end
+			if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+				if ismissed(b) == 0 then
+					if unit[b].crit == 0 then
+						printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					else
+						printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. unit[b].log.sad[turn-1] .. ' SAD', 1, 'bttm')
+					end
+				end
+			end
+		end	
+		--/bottom	
 	end
 end
 
@@ -294,13 +458,13 @@ function iscounter()
 	return unit[b].def >= unit[a].def
 end
 
-function ismissed()
-	local a,b = whosemove()
-	if not unit[a].log.miss[turn] then
-		unit[a].miss = chance(unit[a].irr)
-		unit[a].log.miss[turn] = true
+function ismissed(num)
+	--local a,b = whosemove()
+	if not unit[num].log.miss[turn] then
+		unit[num].miss = chance(unit[num].irr)
+		unit[num].log.miss[turn] = true
 	end
-	return unit[a].miss
+	return unit[num].miss
 end
 
 function love.keypressed(key)
@@ -313,12 +477,24 @@ function love.keypressed(key)
 		end
 		local a,b = whosemove()
 		if unit[a].hp > 0 and unit[b].hp > 0 then
-			if ismissed() == 0 then
-				attack(a, b)
+			if ismissed(a) == 0 then
+				writelogs_before(a,b)
+				attack(a,b)
+				writelogs_after(a,b)
 				if iscounter() then
-					attack(b, a)
-					getanxious(b, a)
+					if ismissed(b) == 0 then
+						writelogs_before(b,a)
+						attack(b, a)
+						getanxious(b, a)
+						writelogs_after(b,a)
+					else
+						writelogs_before(b,a)
+						writelogs_after(b,a)
+					end
 				end
+			else
+				writelogs_before(a,b)
+				writelogs_after(a,b)
 			end
 			showresult = true
 		end
