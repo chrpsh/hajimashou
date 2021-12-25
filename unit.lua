@@ -2,13 +2,13 @@ Unit = Object:extend()
 
 function Unit:new(num, name)
 	self.id = num
-	self.width = comm:getWidth('H') * 6
-	if num == 0 then
+	self.width = comm:getWidth('H') * 7
+	if num == 0--[[num < 4]] then
 		self.x = 0
-		--self.y = 0 + 140*num
+		--self.y = 0 + 100*num
 	else
 		self.x = window_width - self.width
-		--self.y = 0 + 140*(num-4)
+		--self.y = 0 + 100*(num-4)
 	end
 
 	self.y = 0
@@ -21,8 +21,8 @@ function Unit:new(num, name)
 	self.def = math.random(1,2)
 	self.sad = math.random(0,1)
 	--self.anx = math.random(0,1)
-	self.irr = .1
-	self.anx = .1
+	self.irr = 1
+	self.anx = 0
 	self.crit = 0
 	self.miss = 0
 	
@@ -47,6 +47,15 @@ function Unit:update(dt)
 	end]]
 end
 
+
+function Unit:statupdate()
+	love.graphics.print('DEF ' .. self.log.def[turn-1], self.x, self.y+14*3)
+	local def_width = comm:getWidth('DEF ' .. self.log.def[turn-1])
+	local def_diff = self.log.def[turn] - self.log.def[turn-1]
+	set_color('green')
+	love.graphics.print(' +' .. def_diff, def_width + self.x, self.y+14*3)
+	set_color('white')
+end
 
 function Unit:draw()
 	love.graphics.setFont(comm)
@@ -88,11 +97,32 @@ function Unit:draw()
 			love.graphics.print('DEF ' .. self.def, self.x, self.y+14*3)
 		end
 
-		love.graphics.print('SAD ' .. self.sad, self.x, self.y+14*4)
-		love.graphics.print('ANX ' .. self.anx, self.x, self.y+14*5)
-		love.graphics.print('IRR ' .. self.irr, self.x, self.y+14*6)
+		if self.log.sad[turn] ~= self.log.sad[turn-1] and self.log.sad[turn-1] ~= nil and self.log.sad[turn] ~= nil then
+			love.graphics.print('SAD ' .. self.log.sad[turn-1], self.x, self.y+14*4)
+			local sad_width = comm:getWidth('SAD ' .. self.log.sad[turn-1])
+			local sad_diff = self.log.sad[turn] - self.log.sad[turn-1]
+			set_color('red')
+			love.graphics.print(' +' .. sad_diff, sad_width + self.x, self.y+14*4)
+			set_color('white')
+		else
+			love.graphics.print('SAD ' .. self.sad, self.x, self.y+14*4)
+		end
 
-		love.graphics.print('MISS ' .. self.miss, self.x, self.y+14*7)
+		--love.graphics.print('ANX ' .. self.anx, self.x, self.y+14*5)
+		if self.log.irr[turn] ~= self.log.irr[turn-1] and self.log.irr[turn-1] ~= nil and self.log.irr[turn] ~= nil then
+			love.graphics.print('IRR ' .. self.log.irr[turn-1], self.x, self.y+14*5)
+			local irr_width = comm:getWidth('IRR ' .. self.log.irr[turn-1])
+			local irr_diff = self.log.irr[turn] - self.log.irr[turn-1]
+			--local irr_diff = irr_diff % 10
+			set_color('red')
+			love.graphics.print(' +' .. irr_diff, irr_width + self.x, self.y+14*5)
+			set_color('white')
+		else
+			love.graphics.print('IRR ' .. self.irr, self.x, self.y+14*5)
+		end
+
+
+		--love.graphics.print('MISS ' .. self.miss, self.x, self.y+14*7)
 
 		--love.graphics.print('DEF ' .. self.hp, self.x, 14*1)
 	else

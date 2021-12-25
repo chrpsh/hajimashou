@@ -13,6 +13,7 @@ function love.load()
 	--[0]='XÆA-12', 'RX-78-2'--[[, 'A-17', 'L83644KDR', 'EX41285', 'X1234SSX', 'ELTH-B03', '00475-AEDF-2']]--}
 
 	for i=0,1 do
+	--for i=0,7 do
 		--unit[i] = Unit(i, names[i])
 		unit[i] = Unit(i, givemename())
 	end
@@ -125,7 +126,7 @@ function attack(a, b)
 	--/
 
 	--calculating damage
-	local dmg = unit[a].att + unit[a].att*2*unit[a].crit - unit[b].def - unit[a].sad
+	local dmg = unit[a].att + unit[a].att*2*unit[a].crit - unit[b].def - math.floor(unit[a].sad)
 
 	if dmg < 0 then
 		dmg = 0
@@ -157,15 +158,21 @@ function attack(a, b)
 	--log.moves.b[turn] = b
 end
 
+function getsad(x)
+	unit[x].log.sad[turn-1] = unit[x].sad
+	unit[x].sad = unit[x].sad + .2
+	unit[x].log.sad[turn] = unit[x].sad
+end
+
 function getanxious(a,b)
 	unit[b].log.anx[turn-1] = unit[b].anx
-	unit[b].anx = unit[b].anx + .1
+	unit[b].anx = unit[b].anx + 1
 	unit[b].log.anx[turn] = unit[b].anx
 end
 
 function getirritated(b)
 	unit[b].log.irr[turn-1] = unit[b].irr
-	unit[b].irr = unit[b].irr + .1
+	unit[b].irr = unit[b].irr + .2
 	unit[b].log.irr[turn] = unit[b].irr
 end
 
@@ -178,9 +185,15 @@ function nextturn()
 end
 
 function whosemove()
+	--local a = math.random(0,3)
+	--local b = math.random(4,7)
 	if (turn % 2 == 0) then
+		--return a,b
+		--return math.random(0,3), math.random(4,7)
 		return 1, 0
 	else
+		--return math.random(4,7), math.random(0,3)
+		--return b,a
 		return 0, 1
 	end
 end
@@ -461,7 +474,8 @@ end
 function ismissed(num)
 	--local a,b = whosemove()
 	if not unit[num].log.miss[turn] then
-		unit[num].miss = chance(unit[num].irr)
+		local irr = unit[num].irr / 10
+		unit[num].miss = chance(irr)
 		unit[num].log.miss[turn] = true
 	end
 	return unit[num].miss
@@ -489,11 +503,13 @@ function love.keypressed(key)
 						writelogs_after(b,a)
 					else
 						writelogs_before(b,a)
+						getsad(b)
 						writelogs_after(b,a)
 					end
 				end
 			else
 				writelogs_before(a,b)
+				getsad(a)
 				writelogs_after(a,b)
 			end
 			showresult = true
