@@ -102,7 +102,7 @@ function Unit:draw()
 			local sad_width = comm:getWidth('SAD ' .. self.log.sad[turn-1])
 			local sad_diff = self.log.sad[turn] - self.log.sad[turn-1]
 			set_color('red')
-			love.graphics.print(' +' .. sad_diff, sad_width + self.x, self.y+14*4)
+			love.graphics.print(' +' .. sad_diff%1, sad_width + self.x, self.y+14*4)
 			set_color('white')
 		else
 			love.graphics.print('SAD ' .. self.sad, self.x, self.y+14*4)
@@ -113,14 +113,35 @@ function Unit:draw()
 			love.graphics.print('IRR ' .. self.log.irr[turn-1], self.x, self.y+14*5)
 			local irr_width = comm:getWidth('IRR ' .. self.log.irr[turn-1])
 			local irr_diff = self.log.irr[turn] - self.log.irr[turn-1]
+			--local irr_diff = math.fmod(irr_diff)
 			--local irr_diff = irr_diff % 10
+			--local irr_diff = string.format("%.1f", irr_diff);
 			set_color('red')
-			love.graphics.print(' +' .. irr_diff, irr_width + self.x, self.y+14*5)
+			love.graphics.print(' +' .. irr_diff--[[math.fmod(irr_diff,1)]], irr_width + self.x, self.y+14*5)
 			set_color('white')
 		else
 			love.graphics.print('IRR ' .. self.irr, self.x, self.y+14*5)
 		end
 
+		if self.irr >= 1.6 then
+			set_color('red')
+			local h = 14
+			--local h = comm:getHeight()
+			love.graphics.rectangle('fill', self.x, self.y+14*6+2, h, h)
+			
+			love.graphics.print(' SHIT', self.x + h, self.y+14*6)
+			set_color('white')
+		end
+
+		if self.sad >= 1.6 then
+			set_color('yellow')
+			local h = 14
+			--local h = comm:getHeight()
+			love.graphics.rectangle('fill', self.x, self.y+14*7+2, h, h)
+			--set_color('white')
+			love.graphics.print(' FUCK', self.x + h, self.y+14*7)
+			set_color('white')
+		end
 
 		--love.graphics.print('MISS ' .. self.miss, self.x, self.y+14*7)
 
