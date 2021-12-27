@@ -181,6 +181,21 @@ function getirritated(b)
 	unit[b].log.irr[turn] = unit[b].irr
 end
 
+function randomevent()
+	local a,b = whosemove()
+	if unit[a].def ~= nil and unit[a].att ~= nil and unit[a].irr ~= nil and unit[a].sad ~= nil then
+		--if turn == 7 then
+			unit[a].def = unit[a].def - 1
+			unit[a].att = unit[a].att - 1
+			unit[a].irr = unit[a].irr + 1
+			unit[a].sad = unit[a].sad + 1
+			--print doesn't work from here
+			--printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
+			--printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')
+		--end
+	end
+end
+
 function getcenter(str)
 	return (window_width - comm:getWidth(str))/2
 end
@@ -394,6 +409,9 @@ function love.keypressed(key)
 				writelogs_after(a,b)
 			end
 			showresult = true
+			if turn == 7 then
+				randomevent()
+			end
 		end
 	end
 end
@@ -410,6 +428,36 @@ function love.draw()
 	end
 
 	local a,b = whosemove()
+
+	--[[love.graphics.print(4.2%1, 300, 400)
+	love.graphics.print(math.fmod(4.2,1), 300, 400+14)
+	love.graphics.print(math.mod(4.2,1), 300, 400+14*2)]]
+
+	if turn == 7 then
+		printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
+		printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')
+		
+		if unit[a].log.def[turn] ~= unit[a].log.def[turn-1] then
+			printstr('log ~=', 16, 'top')
+		end
+
+		if unit[a].def ~= unit[a].log.def[turn-1] then
+			printstr('def ~=', 17, 'top')
+		end
+
+		if unit[a].irr ~= unit[a].log.irr[turn-1] then
+			printstr('irr not ==', 19, 'top')
+		end
+
+		--[[if unit[a].irr > unit[a].log.irr[turn-1] then
+			printstr('irr > turn - 1', 20, 'top')
+		end]]
+
+		--[[unit[a].def = unit[a].def - 1
+		unit[a].att = unit[a].att - 1
+		unit[a].irr = unit[a].irr + 1
+		unit[a].sad = unit[a].sad + 1]]
+	end
 
 	--old
 		--[[if log.crit.a[turn] then
