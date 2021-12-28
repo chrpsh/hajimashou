@@ -433,6 +433,28 @@ function love.draw()
 	love.graphics.print(math.fmod(4.2,1), 300, 400+14)
 	love.graphics.print(math.mod(4.2,1), 300, 400+14*2)]]
 
+	--unit[a].log['att'][1] = 17
+	--unit[a].log['att'][2] = 32
+
+	--[[for i,v in ipairs(unit[a].log['att']) do
+		love.graphics.print(unit[a].log['att'][i], 200, 200+i*14)
+	end
+
+	love.graphics.print(unit[a].log['att'][turn], 200, 200+4*14)
+	love.graphics.print(unit[a].stat['hp'], 200, 200+5*14)
+	love.graphics.print(unit[a].stat['att'], 200, 200+7*14)]]
+	--love.graphics.print('t.gn: 	' .. table.getn(unit[a].stat['att']), 200, 200+8*14)
+	--love.graphics.print(table.getn(unit[a].stat['irr']), 200, 200+8*14)
+	--love.graphics.print(table.getn(unit[a].stat['anx']), 200, 200+9*14)
+
+	--					self.stat['hp'] = 100
+	--					self.stat['att'] = math.random(3,5)
+
+	--love.graphics.print(unit[a].stat['def'], 200, 200+8*14)
+	--love.graphics.print(unit[a].stat['irr'], 200, 200+9*14)
+
+	--printstr('stat.att: '..unit[a].stat['att']..' ; log.turn-1: ' .. unit[a].log['att'][1], 9, 'top')
+
 	if turn == 7 then
 		printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
 		printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')

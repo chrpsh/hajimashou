@@ -16,6 +16,26 @@ function Unit:new(num, name)
 
 	self.name = name
 
+	self.stat = {}
+	self.stat['hp'] = 100
+	self.stat['att'] = math.random(3,5)
+	self.stat['def'] = math.random(1,2)
+	self.stat['sad'] = math.random(0,1)
+	self.stat['irr'] = 1
+	self.stat['anx'] = 0
+	
+	self.log = {}
+	self.log['hp'] = {}
+	self.log['att'] = {}
+	self.log['def'] = {}
+	self.log['sad'] = {}
+	self.log['irr'] = {}
+	self.log['anx'] = {}
+	--self.stat['crit'] = 0
+	--self.stat['miss'] = 0
+
+
+
 	self.hp = 100
 	self.att = math.random(3,5)
 	self.def = math.random(1,2)
