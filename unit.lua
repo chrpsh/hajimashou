@@ -13,7 +13,6 @@ function Unit:new(num, name)
 
 	self.y = 0
 	
-
 	self.name = name
 
 	self.stat = {}
@@ -31,22 +30,18 @@ function Unit:new(num, name)
 	self.log['sad'] = {}
 	self.log['irr'] = {}
 	self.log['anx'] = {}
-	--self.stat['crit'] = 0
-	--self.stat['miss'] = 0
+	self.log['crit'] = {}
 
-
+	--old ↓
 
 	self.hp = 100
 	self.att = math.random(3,5)
 	self.def = math.random(1,2)
 	self.sad = math.random(0,1)
-	--self.anx = math.random(0,1)
 	self.irr = 1
 	self.anx = 0
 	self.crit = 0
 	self.miss = 0
-	
-	--self.talk = {'KISAMA', 'MASAKA', 'TATAKAE', 'SHINEE', 'KUROSU', 'ARA ARA', 'SATTE TO', 'HAJIMEMASHOU', 'WARUKATTA', 'SHIMATTA', 'YARE YARE', 'AHO', 'BAKA'}
 
 	self.log = {}
 	self.log.hp = {}
@@ -61,26 +56,12 @@ end
 
 
 function Unit:update(dt)
-	--[[if not self.log.miss[turn] then
-		self.miss = chance(self.irr)
-		self.log.miss[turn] = true
-	end]]
 end
 
-
-function Unit:statupdate()
-	love.graphics.print('DEF ' .. self.log.def[turn-1], self.x, self.y+14*3)
-	local def_width = comm:getWidth('DEF ' .. self.log.def[turn-1])
-	local def_diff = self.log.def[turn] - self.log.def[turn-1]
-	set_color('green')
-	love.graphics.print(' +' .. def_diff, def_width + self.x, self.y+14*3)
-	set_color('white')
-end
 
 function Unit:draw()
 	love.graphics.setFont(comm)
 	if self.hp > 0 then
-		--love.graphics.print('>>' .. self.id, self.x, 14*0)
 		love.graphics.print(self.name, self.x, self.y+14*0)
 		
 		love.graphics.print('HP ' .. self.hp, self.x, self.y+14*1)
@@ -92,15 +73,10 @@ function Unit:draw()
 			set_color('white')
 		end
 
-		--love.graphics.print('ATT ' .. self.att, self.x, 14*2)
-		
 		if self.att ~= self.log.att[turn-1] and self.log.att[turn-1] ~= nil and self.log.att[turn] ~= nil then
-		--if self.log.att[turn] ~= self.log.att[turn-1] and self.log.att[turn-1] ~= nil and self.log.att[turn] ~= nil then
 			love.graphics.print('ATT ' .. self.log.att[turn-1], self.x, self.y+14*2)
 			local att_width = comm:getWidth('ATT ' .. self.log.att[turn-1])
 			local att_diff = self.att - self.log.att[turn-1]
-			--local att_diff = self.log.att[turn] - self.log.att[turn-1]
-			--set_color('yellow')
 			if self.att > self.log.att[turn-1] then
 				set_color('yellow')
 				love.graphics.print(' +' .. att_diff, att_width + self.x, self.y+14*2)
@@ -113,15 +89,10 @@ function Unit:draw()
 			love.graphics.print('ATT ' .. self.att, self.x, self.y+14*2)
 		end
 
-		--love.graphics.print('DEF ' .. self.def, self.x, 14*3)
 		if self.def ~= self.log.def[turn-1] and self.log.def[turn-1] ~= nil and self.log.def[turn] ~= nil then
-		--if self.log.def[turn] ~= self.log.def[turn-1] and self.log.def[turn-1] ~= nil and self.log.def[turn] ~= nil then
 			love.graphics.print('DEF ' .. self.log.def[turn-1], self.x, self.y+14*3)
 			local def_width = comm:getWidth('DEF ' .. self.log.def[turn-1])
 			local def_diff = self.def - self.log.def[turn-1]
-			--local def_diff = self.log.def[turn] - self.log.def[turn-1]
-			--set_color('green')
-			--love.graphics.print(' +' .. def_diff, def_width + self.x, self.y+14*3)
 			if self.def > self.log.def[turn-1] then
 				set_color('green')
 				love.graphics.print(' +' .. def_diff, def_width + self.x, self.y+14*3)
@@ -129,20 +100,12 @@ function Unit:draw()
 				set_color('red')
 				love.graphics.print(' ' .. def_diff, def_width + self.x, self.y+14*3)
 			end
-			--[[if def_diff > 0 then
-				love.graphics.print(' +' .. def_diff, def_width + self.x, self.y+14*3)
-			elseif def_diff == 0 then
-				love.graphics.print(' WHA ' .. def_diff, def_width + self.x, self.y+14*3)
-			elseif def_diff < 0 then
-				love.graphics.print(' −' .. def_diff, def_width + self.x, self.y+14*3)
-			end]]
 			set_color('white')
 		else
 			love.graphics.print('DEF ' .. self.def, self.x, self.y+14*3)
 		end
 
 		if self.sad ~= self.log.sad[turn-1] and self.log.sad[turn-1] ~= nil and self.log.sad[turn] ~= nil then
-		--if self.log.sad[turn] ~= self.log.sad[turn-1] and self.log.sad[turn-1] ~= nil and self.log.sad[turn] ~= nil then
 			love.graphics.print('SAD ' .. self.log.sad[turn-1], self.x, self.y+14*4)
 			local sad_width = comm:getWidth('SAD ' .. self.log.sad[turn-1])
 			local sad_diff = self.sad - self.log.sad[turn-1]
@@ -157,22 +120,12 @@ function Unit:draw()
 			love.graphics.print('SAD ' .. self.sad, self.x, self.y+14*4)
 		end
 
-		--love.graphics.print('ANX ' .. self.anx, self.x, self.y+14*5)
 		if self.irr ~= self.log.irr[turn-1] and self.log.irr[turn-1] ~= nil and self.irr ~= nil then
-		--if self.log.irr[turn] ~= self.log.irr[turn-1] and self.log.irr[turn-1] ~= nil and self.log.irr[turn] ~= nil then
 			love.graphics.print('IRR ' .. self.log.irr[turn-1], self.x, self.y+14*5)
 			local irr_width = comm:getWidth('IRR ' .. self.log.irr[turn-1])
 			local irr_diff = self.irr - self.log.irr[turn-1]
-			--local irr_diff = math.fmod(irr_diff)
-			--local irr_diff = irr_diff % 10
-			--local irr_diff = string.format("%.1f", irr_diff);
 			set_color('red')
 			love.graphics.print(' +' .. irr_diff, irr_width + self.x, self.y+14*5)
-			--[[if self.irr > self.log.irr[turn-1] then
-				love.graphics.print(' +' .. irr_diff, irr_width + self.x, self.y+14*5)
-			else
-				love.graphics.print(' ??' .. irr_diff, irr_width + self.x, self.y+14*5)
-			end]]
 			set_color('white')
 		else
 			love.graphics.print('IRR ' .. self.irr, self.x, self.y+14*5)
@@ -181,7 +134,6 @@ function Unit:draw()
 		if self.irr >= 1.6 then
 			set_color('red')
 			local h = 14
-			--local h = comm:getHeight()
 			love.graphics.rectangle('fill', self.x, self.y+14*6+2, h, h)
 			
 			love.graphics.print(' SHIT', self.x + h, self.y+14*6)
@@ -191,16 +143,10 @@ function Unit:draw()
 		if self.sad >= 1.6 then
 			set_color('yellow')
 			local h = 14
-			--local h = comm:getHeight()
 			love.graphics.rectangle('fill', self.x, self.y+14*7+2, h, h)
-			--set_color('white')
 			love.graphics.print(' FUCK', self.x + h, self.y+14*7)
 			set_color('white')
 		end
-
-		--love.graphics.print('MISS ' .. self.miss, self.x, self.y+14*7)
-
-		--love.graphics.print('DEF ' .. self.hp, self.x, 14*1)
 	else
 		set_color('red')
 		love.graphics.print('DIED', self.x, self.y+14*0)

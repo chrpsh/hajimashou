@@ -9,46 +9,12 @@ function love.load()
 
 	unit = {}
 	
-	--[[local names = {
-	--[0]='XÆA-12', 'RX-78-2'--[[, 'A-17', 'L83644KDR', 'EX41285', 'X1234SSX', 'ELTH-B03', '00475-AEDF-2']]--}
-
 	for i=0,1 do
-	--for i=0,7 do
-		--unit[i] = Unit(i, names[i])
 		unit[i] = Unit(i, givemename())
 	end
 
 	turn = 1
 	showresult = false
-
-	--old
-		--[[log = {}
-		log.moves = {}
-		log.moves.a = {}
-		log.moves.b = {}
-
-		log.crit = {}
-		log.crit.a = {}
-		log.crit.b = {}]]	
-
-		--rand_chance = 0
-
-		--crit = {a='', b=''}
-		--crit = {}
-		--crit.a = 0
-		--crit.b = 0
-		--crit.a = {}
-		--crit.b = {}
-
-		--crit_check = {}
-		--crit_check_counter = {}
-		--ch = 0
-
-		--[[rand_names = {}
-
-		for i=0,11 do
-			rand_names[i] = givemename()
-		end]]
 
 	math.randomseed(os.time())
 end
@@ -98,30 +64,11 @@ function writelogs_after(a,b)
 end
 
 function attack(a, b)
-	--log
-	--[[unit[a].log.att[turn-1] = unit[a].att
-	unit[a].log.sad[turn-1] = unit[a].sad
-
-	unit[b].log.hp[turn-1] = unit[b].hp
-	unit[b].log.def[turn-1] = unit[b].def]]
-	--/log
-
 	--chance of crit
-	if not unit[a].log.crit[turn] then
-	--if not log.crit.a[turn] then
-		--ch = chance(.2)
+	if not unit[a].log.crit[turn] and not unit[a].log['crit'][turn] then
 		unit[a].crit = chance(.2)
 		unit[a].log.crit[turn] = true
-		--log.crit.a[turn] = true
-		--crit[a][turn] = true
-		--unit[a].crit = chance(.2)
-		--unit[b].crit = chance(.2)
-		--crit.a = chance(.2)
-		--crit.b = chance(.2)
-		--crit[a] = ch --chance(.2)
-		--crit[b] = ch --chance(.2)
-		--crit.a[step] = chance(.2)
-		--crit.b[step] = chance(.2)
+		unit[a].log['crit'][turn] = true
 	end
 	--/
 
@@ -139,29 +86,8 @@ function attack(a, b)
 	if unit[a].crit == 1 then
 		getirritated(b)
 	end
-
-	--/
-
-	--log
-	--unit[a].log.hp[turn] = unit[a].hp
-	--unit[a].log.def[turn] = unit[a].def	
-	--[[unit[a].log.att[turn] = unit[a].att
-	unit[a].log.sad[turn] = unit[a].sad
-
-	unit[b].log.hp[turn] = unit[b].hp
-	unit[b].log.def[turn] = unit[b].def]]
-	
-	--unit[b].log.att[turn] = unit[b].att
-	--unit[b].log.sad[turn] = unit[b].sad
-
-	--log.moves.a[turn] = a
-	--log.moves.b[turn] = b
 end
 
---[[function superirritated(x)
-	unit[x].irr >= 2
-
-end]]
 
 function getsad(x)
 	unit[x].log.sad[turn-1] = unit[x].sad
@@ -184,15 +110,10 @@ end
 function randomevent()
 	local a,b = whosemove()
 	if unit[a].def ~= nil and unit[a].att ~= nil and unit[a].irr ~= nil and unit[a].sad ~= nil then
-		--if turn == 7 then
-			unit[a].def = unit[a].def - 1
-			unit[a].att = unit[a].att - 1
-			unit[a].irr = unit[a].irr + 1
-			unit[a].sad = unit[a].sad + 1
-			--print doesn't work from here
-			--printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
-			--printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')
-		--end
+		unit[a].def = unit[a].def - 1
+		unit[a].att = unit[a].att - 1
+		unit[a].irr = unit[a].irr + 1
+		unit[a].sad = unit[a].sad + 1
 	end
 end
 
@@ -410,7 +331,8 @@ function love.keypressed(key)
 			end
 			showresult = true
 			if turn == 7 then
-				randomevent()
+				--until later
+				--randomevent()
 			end
 		end
 	end
@@ -429,33 +351,26 @@ function love.draw()
 
 	local a,b = whosemove()
 
-	--[[love.graphics.print(4.2%1, 300, 400)
-	love.graphics.print(math.fmod(4.2,1), 300, 400+14)
-	love.graphics.print(math.mod(4.2,1), 300, 400+14*2)]]
-
-	--unit[a].log['att'][1] = 17
-	--unit[a].log['att'][2] = 32
-
-	--[[for i,v in ipairs(unit[a].log['att']) do
-		love.graphics.print(unit[a].log['att'][i], 200, 200+i*14)
+	love.graphics.print('logs', 20, 180-14)
+	for i,v in ipairs(unit[a].log['crit']) do
+		if unit[a].log['crit'][turn] == true then
+			love.graphics.print('crit.[' .. a .. '][' .. turn-i .. ']: true', 20, 180+14*i)
+		else
+			love.graphics.print('crit.[' .. a .. '][' .. turn-i .. ']: false', 20, 180+14*i)
+		end
 	end
 
-	love.graphics.print(unit[a].log['att'][turn], 200, 200+4*14)
-	love.graphics.print(unit[a].stat['hp'], 200, 200+5*14)
-	love.graphics.print(unit[a].stat['att'], 200, 200+7*14)]]
-	--love.graphics.print('t.gn: 	' .. table.getn(unit[a].stat['att']), 200, 200+8*14)
-	--love.graphics.print(table.getn(unit[a].stat['irr']), 200, 200+8*14)
-	--love.graphics.print(table.getn(unit[a].stat['anx']), 200, 200+9*14)
-
-	--					self.stat['hp'] = 100
-	--					self.stat['att'] = math.random(3,5)
-
-	--love.graphics.print(unit[a].stat['def'], 200, 200+8*14)
-	--love.graphics.print(unit[a].stat['irr'], 200, 200+9*14)
+	for i,v in ipairs(unit[b].log['crit']) do
+		if unit[a].log['crit'][turn] == true then
+			love.graphics.print('crit.[' .. b .. '][' .. turn-i .. ']: true', 200, 180+14*i)
+		else
+			love.graphics.print('crit.[' .. b .. '][' .. turn-i .. ']: false', 200, 180+14*i)
+		end
+	end
 
 	--printstr('stat.att: '..unit[a].stat['att']..' ; log.turn-1: ' .. unit[a].log['att'][1], 9, 'top')
 
-	if turn == 7 then
+	--[[if turn == 7 then
 		printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
 		printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')
 		
@@ -470,127 +385,7 @@ function love.draw()
 		if unit[a].irr ~= unit[a].log.irr[turn-1] then
 			printstr('irr not ==', 19, 'top')
 		end
-
-		--[[if unit[a].irr > unit[a].log.irr[turn-1] then
-			printstr('irr > turn - 1', 20, 'top')
-		end]]
-
-		--[[unit[a].def = unit[a].def - 1
-		unit[a].att = unit[a].att - 1
-		unit[a].irr = unit[a].irr + 1
-		unit[a].sad = unit[a].sad + 1]]
-	end
-
-	--old
-		--[[if log.crit.a[turn] then
-			love.graphics.print('log.crit.a: true', window_width/2, window_height/2-28)
-		else
-			love.graphics.print('log.crit.a: false', window_width/2, window_height/2-28)
-		end]]
-
-		--love.graphics.print('Æ Ħ Ø Œ ẞ Ə Ŧ Њ Ђ Ө * # $ ¥ @ & ¶ § † ‡ ≤', window_width/4, window_height/2)
-		--love.graphics.print('Æ Ø Œ Ө', window_width/4, window_height/2+14)
-		--love.graphics.print('†', window_width/4, window_height/2+14*3)
-
-		--35—38, 64, 146, 157, 
-		--[[local sp = {35, 36, 37, 38, 64, 146, 157}
-		local sp_l = table.getn(sp)
-		local sp_r = math.random(0,sp_l)
-
-		local str = string.char(math.random(65,90))
-
-		--local char = string.char(sp[sp_r])
-
-		local num = math.random(00,99)]]
-
-		--[[local char_1 = {}
-		local char_2 = {}
-		local char_3 = {}]]
-
-		--if not wedidit then
-		--[[	for i=0,10 do
-				char_1[i] = string.char(math.random(65,90))
-				char_2[i] = string.char(math.random(35,38))
-				char_3[i] = math.random(00,99)
-				--if i == 10 then
-				--	wedidit = true
-				--end
-			end]]
-		--end
-
-		--if wedidit then
-			--[[for i=0,10 do
-				if char_1[i] ~= nil and char_2[i] ~= nil and char_3[i] ~= nil then
-				love.graphics.print('†	' .. char_1[i] .. 
-					char_2[i] .. '-' .. 
-					char_3[i], window_width/4, window_height/2+14*i)
-				--love.graphics.print('†	' .. string.char(math.random(65,90)) .. string.char(math.random(35,38)) .. '-' .. math.random(00,99), window_width/4, window_height/2+14*i)
-				end
-			end]]
-		--end
-
-
-		--love.graphics.print(string.char(math.random(65,90)) .. string.char(math.random(35,38)), window_width/4, window_height/2+14)
-		
-		--[[for i,v in ipairs(rand_names) do
-			love.graphics.print(rand_names[i], window_width/3*2, window_height/2+14*i-14)
-		end]]
-		--love.graphics.print(math.random(00,99), window_width/2, window_height/2+14)
-
-	--[[ STATUS LOG
-	love.graphics.print('turn 	' .. turn, window_width/2, window_height/2-14*7)
-	love.graphics.print('a: 	' .. unit[a].name, window_width/2, window_height/2-14*6)
-	love.graphics.print('b: 	' .. unit[b].name, window_width/2, window_height/2-14*5)
-
-	if unit[a].log.crit[turn] then
-		love.graphics.print('a.log.cr[' .. turn .. ']: 	true', window_width/2, window_height/2-14*3)
-	else
-		love.graphics.print('a.log.cr[' .. turn .. ']: 	false', window_width/2, window_height/2-14*3)
-	end
-
-	if unit[b].log.crit[turn] then
-		love.graphics.print('b.log.cr[' .. turn .. ']: 	true', window_width/2, window_height/2-28)
-	else
-		love.graphics.print('b.log.cr[' .. turn .. ']: 	false', window_width/2, window_height/2-28)
-	end
-
-	love.graphics.print('a.crit: 	' .. unit[a].crit, window_width/2, window_height/2)
-	love.graphics.print('b.crit: 	' .. unit[b].crit, window_width/2, window_height/2+14)
-	love.graphics.print('a.att: ' .. unit[a].att + unit[a].att*2*unit[a].crit, window_width/2, window_height/2+14*3)
-	love.graphics.print('b.att: ' .. unit[b].att + unit[b].att*2*unit[b].crit, window_width/2, window_height/2+14*4)
-	]]
-
-	--old
-		--[[if ch then
-			love.graphics.print('ch: true', window_width/2, window_height/2-14)
-		else
-			love.graphics.print('ch: false', window_width/2, window_height/2-14)
-		end]]
-		
-
-		--love.graphics.print('ch: ' .. ch, window_width/2, window_height/2+14*3)
-		--love.graphics.print('rand: ' .. rand_chance, window_width/2, window_height/2+14*4)
-		--love.graphics.print('crit.a: ' .. crit.a, window_width/2, window_height/2-14*4)
-		--love.graphics.print('crit.a: ' .. unit[a].log.crit, window_width/2, window_height/2+14*4)
-		--love.graphics.print('crit.b: ' .. crit.b, window_width/2, window_height/2-14*5)
-
-		--[[if crit.a then
-			love.graphics.print('crit.a: true', window_width/2, window_height/2+14)
-		else
-			love.graphics.print('crit.a: false', window_width/2, window_height/2+14)
-		end
-
-		if crit.b then
-			love.graphics.print('crit.b: true', window_width/2, window_height/2+28)
-		else
-			love.graphics.print('crit.b: false', window_width/2, window_height/2+28)
-		end]]
-		
-
-		--[[if crit[a] ~= nil and crit[b] ~= nil then
-			love.graphics.print('crit[a]: ' .. crit[a], window_width/2, window_height/2)
-			love.graphics.print('crit[b]: ' .. crit[b], window_width/2, window_height/2+14)
-		end]]
+	end]]
 
 	showstatus()
 end
