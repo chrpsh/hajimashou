@@ -52,8 +52,16 @@ end
 function writelogs_before(a,b)
 	unit[a].log.att[turn-1] = unit[a].att
 	unit[a].log.sad[turn-1] = unit[a].sad
-	unit[b].log.hp[turn-1] = unit[b].hp
+	unit[b].log.hp[turn-1] = unit[b].hp	
 	unit[b].log.def[turn-1] = unit[b].def
+
+	unit[b].log['hp'][turn-1] = unit[b].stat['hp']
+	unit[a].log['att'][turn-1] = unit[a].stat['att']
+
+	--[[unit[a].log['att'][turn-1] = unit[a].stat['att']
+	unit[a].log['sad'][turn-1] = unit[a].stat['sad']
+	unit[b].log['hp'][turn-1] = unit[b].stat['hp']	
+	unit[b].log['def'][turn-1] = unit[b].stat['def'] ]]
 end
 
 function writelogs_after(a,b)
@@ -61,6 +69,14 @@ function writelogs_after(a,b)
 	unit[a].log.sad[turn] = unit[a].sad
 	unit[b].log.hp[turn] = unit[b].hp
 	unit[b].log.def[turn] = unit[b].def
+
+	unit[b].log['hp'][turn] = unit[b].stat['hp']
+	unit[a].log['att'][turn] = unit[a].stat['att']
+
+	--[[unit[a].log['att'][turn] = unit[a].stat['att']
+	unit[a].log['sad'][turn] = unit[a].stat['sad']
+	unit[b].log['hp'][turn] = unit[b].stat['hp']	
+	unit[b].log['def'][turn] = unit[b].stat['def'] ]]
 end
 
 function attack(a, b)
@@ -82,6 +98,8 @@ function attack(a, b)
 
 	--doing attack on victim's hp
 	unit[b].hp = unit[b].hp - dmg
+
+	unit[b].stat['hp'] = unit[b].stat['hp'] - dmg
 
 	if unit[a].crit == 1 then
 		getirritated(b)
@@ -351,8 +369,58 @@ function love.draw()
 
 	local a,b = whosemove()
 
-	love.graphics.print('logs', 20, 180-14)
-	for i,v in ipairs(unit[a].log['crit']) do
+	--[[for i,v in ipairs(unit[a].log['att']) do
+		love.graphics.print('att.[' .. a .. '][' .. turn-i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
+	end]]
+
+	love.graphics.print(unit[a].name, 20, 180-14*3)
+	--[[for i,v in ipairs(unit[a].log['hp']) do
+		love.graphics.print('hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log['hp'][i], 20, 180+14*i)
+	end
+
+	for i,v in ipairs(unit[a].log.hp) do
+		love.graphics.print('/hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log.hp[i], 180, 180+14*i)
+	end]]
+
+	love.graphics.print('att: ' .. unit[a].stat['att'], 20, 180-14)
+
+	for i,v in ipairs(unit[a].log['att']) do
+		love.graphics.print('log[' .. i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
+	end
+
+	love.graphics.print('/att: ' .. unit[a].att, 180, 180-14)
+
+	for i,v in ipairs(unit[a].log.att) do
+		love.graphics.print('/log[' .. i .. ']: ' .. unit[a].log.att[i], 180, 180+14*i)
+	end
+
+
+
+
+	love.graphics.print(unit[b].name, 20+400, 180-14*3)
+
+	love.graphics.print('att: ' .. unit[b].stat['att'], 20+400, 180-14)
+
+	for i,v in ipairs(unit[b].log['att']) do
+		love.graphics.print('log[' .. i .. ']: ' .. unit[b].log['att'][i], 20+400, 180+14*i)
+	end
+
+	love.graphics.print('/att: ' .. unit[b].att, 180+400, 180-14)
+
+	for i,v in ipairs(unit[b].log.att) do
+		love.graphics.print('/log[' .. i .. ']: ' .. unit[b].log.att[i], 180+400, 180+14*i)
+	end
+
+	--for i,v in ipairs(unit[a].stat['att']) do
+		--love.graphics.print('att.[' .. a .. ']: ' .. unit[a].stat['att'], 20+200, 180+14)
+	--end
+
+	--for i,v in ipairs(unit[a].att) do
+		--love.graphics.print('/att.[' .. a .. ']: ' .. unit[a].att, 180+200, 180+14)
+	--end
+
+	--love.graphics.print('logs', 20, 180-14)
+	--[[for i,v in ipairs(unit[a].log['crit']) do
 		if unit[a].log['crit'][turn] == true then
 			love.graphics.print('crit.[' .. a .. '][' .. turn-i .. ']: true', 20, 180+14*i)
 		else
@@ -366,7 +434,7 @@ function love.draw()
 		else
 			love.graphics.print('crit.[' .. b .. '][' .. turn-i .. ']: false', 200, 180+14*i)
 		end
-	end
+	end]]
 
 	--printstr('stat.att: '..unit[a].stat['att']..' ; log.turn-1: ' .. unit[a].log['att'][1], 9, 'top')
 

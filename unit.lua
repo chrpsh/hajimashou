@@ -16,7 +16,7 @@ function Unit:new(num, name)
 	self.name = name
 
 	self.stat = {}
-	self.stat['hp'] = 100
+	self.stat['hp'] = 30
 	self.stat['att'] = math.random(3,5)
 	self.stat['def'] = math.random(1,2)
 	self.stat['sad'] = math.random(0,1)
@@ -34,8 +34,8 @@ function Unit:new(num, name)
 
 	--old ↓
 
-	self.hp = 100
-	self.att = math.random(3,5)
+	self.hp = 30
+	self.att = self.stat['att']--math.random(3,5)
 	self.def = math.random(1,2)
 	self.sad = math.random(0,1)
 	self.irr = 1
