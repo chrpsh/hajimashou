@@ -50,10 +50,10 @@ function chance(x)
 end
 
 function writelogs_before(a,b)
-	unit[a].log.att[turn-1] = unit[a].att
-	unit[a].log.sad[turn-1] = unit[a].sad
-	unit[b].log.hp[turn-1] = unit[b].hp	
-	unit[b].log.def[turn-1] = unit[b].def
+	unit[a].log['att'][turn-1] = unit[a].stat['att']
+	unit[a].log['sad'][turn-1] = unit[a].stat['sad']
+	unit[b].log['hp'][turn-1] = unit[b].stat['hp']	
+	unit[b].log['def'][turn-1] = unit[b].stat['def']
 
 	unit[b].log['hp'][turn-1] = unit[b].stat['hp']
 	unit[a].log['att'][turn-1] = unit[a].stat['att']
@@ -65,10 +65,10 @@ function writelogs_before(a,b)
 end
 
 function writelogs_after(a,b)
-	unit[a].log.att[turn] = unit[a].att
-	unit[a].log.sad[turn] = unit[a].sad
-	unit[b].log.hp[turn] = unit[b].hp
-	unit[b].log.def[turn] = unit[b].def
+	unit[a].log['att'][turn] = unit[a].stat['att']
+	unit[a].log['sad'][turn] = unit[a].stat['sad']
+	unit[b].log['hp'][turn] = unit[b].stat['hp']
+	unit[b].log['def'][turn] = unit[b].stat['def']
 
 	unit[b].log['hp'][turn] = unit[b].stat['hp']
 	unit[a].log['att'][turn] = unit[a].stat['att']
@@ -81,15 +81,15 @@ end
 
 function attack(a, b)
 	--chance of crit
-	if not unit[a].log.crit[turn] and not unit[a].log['crit'][turn] then
+	if not unit[a].log['crit'][turn] --[[and not unit[a].log['crit'][turn]] then
 		unit[a].crit = chance(.2)
-		unit[a].log.crit[turn] = true
 		unit[a].log['crit'][turn] = true
+		--unit[a].log['crit'][turn] = true
 	end
 	--/
 
 	--calculating damage
-	local dmg = unit[a].att + unit[a].att*2*unit[a].crit - unit[b].def - math.floor(unit[a].sad)
+	local dmg = unit[a].stat['att'] + unit[a].stat['att']*2*unit[a].crit - unit[b].stat['def'] - math.floor(unit[a].stat['sad'])
 
 	if dmg < 0 then
 		dmg = 0
@@ -97,9 +97,9 @@ function attack(a, b)
 	--/
 
 	--doing attack on victim's hp
-	unit[b].hp = unit[b].hp - dmg
-
 	unit[b].stat['hp'] = unit[b].stat['hp'] - dmg
+
+	--unit[b].stat['hp'] = unit[b].stat['hp'] - dmg
 
 	if unit[a].crit == 1 then
 		getirritated(b)
@@ -108,30 +108,30 @@ end
 
 
 function getsad(x)
-	unit[x].log.sad[turn-1] = unit[x].sad
-	unit[x].sad = unit[x].sad + .2
-	unit[x].log.sad[turn] = unit[x].sad
+	unit[x].log['sad'][turn-1] = unit[x].stat['sad']
+	unit[x].stat['sad'] = unit[x].stat['sad'] + .2
+	unit[x].log['sad'][turn] = unit[x].stat['sad']
 end
 
 function getanxious(a,b)
-	unit[b].log.anx[turn-1] = unit[b].anx
-	unit[b].anx = unit[b].anx + 1
-	unit[b].log.anx[turn] = unit[b].anx
+	unit[b].log['anx'][turn-1] = unit[b].stat['anx']
+	unit[b].stat['anx'] = unit[b].stat['anx'] + 1
+	unit[b].log['anx'][turn] = unit[b].stat['anx']
 end
 
 function getirritated(b)
-	unit[b].log.irr[turn-1] = unit[b].irr
-	unit[b].irr = unit[b].irr + .2
-	unit[b].log.irr[turn] = unit[b].irr
+	unit[b].log['irr'][turn-1] = unit[b].stat['irr']
+	unit[b].stat['irr'] = unit[b].stat['irr'] + .2
+	unit[b].log['irr'][turn] = unit[b].stat['irr']
 end
 
 function randomevent()
 	local a,b = whosemove()
-	if unit[a].def ~= nil and unit[a].att ~= nil and unit[a].irr ~= nil and unit[a].sad ~= nil then
-		unit[a].def = unit[a].def - 1
-		unit[a].att = unit[a].att - 1
-		unit[a].irr = unit[a].irr + 1
-		unit[a].sad = unit[a].sad + 1
+	if unit[a].stat['def'] ~= nil and unit[a].stat['att'] ~= nil and unit[a].stat['irr'] ~= nil and unit[a].stat['sad'] ~= nil then
+		unit[a].stat['def'] = unit[a].stat['def'] - 1
+		unit[a].stat['att'] = unit[a].stat['att'] - 1
+		unit[a].stat['irr'] = unit[a].stat['irr'] + 1
+		unit[a].stat['sad'] = unit[a].stat['sad'] + 1
 	end
 end
 
@@ -159,7 +159,7 @@ end
 
 function autoplay()
 	tick.recur(function()
-		if unit[0].hp > 0 and unit[1].hp > 0 then
+		if unit[0].stat['hp'] > 0 and unit[1].stat['hp'] > 0 then
 			if showresult then
 				nextturn()
 				showresult = false
@@ -186,7 +186,7 @@ end
 
 function isnill()
 	local a,b = whosemove()
-	return unit[a].log.att[turn-1] ~= nil, unit[b].log.def[turn-1] ~= nil, unit[a].log.sad[turn-1] ~= nil
+	return unit[a].log['att'][turn-1] ~= nil, unit[b].log['def'][turn-1] ~= nil, unit[a].log['sad'][turn-1] ~= nil
 end
 
 function showstatus()
@@ -194,13 +194,13 @@ function showstatus()
 		local a,b = whosemove()
 		local hp_diff = 0
 
-		if unit[b].log.hp[turn-1] ~= nil and unit[b].log.hp[turn] ~= nil then
-			hp_diff = unit[b].log.hp[turn-1] - unit[b].log.hp[turn]
+		if unit[b].log['hp'][turn-1] ~= nil and unit[b].log['hp'][turn] ~= nil then
+			hp_diff = unit[b].log['hp'][turn-1] - unit[b].log['hp'][turn]
 		end
 
 		--top
 		printstr(unit[a].name .. ' →→ ' .. unit[b].name, 0, 'top')
-		--if unit[a].log.att[turn-1] ~= nil and unit[b].log.def[turn-1] ~= 0 and unit[a].log.sad[turn-1] ~= nil then
+		--if unit[a].log['att'][turn-1] ~= nil and unit[b].log['def'][turn-1] ~= 0 and unit[a].log['sad'][turn-1] ~= nil then
 		local nill1, nill2, nill3 = isnill()
 		local nillsum = nill1 and nill2 and nill3
 		if nillsum then
@@ -214,11 +214,11 @@ function showstatus()
 					set_color('white')
 				end
 
-				if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+				if iscounter() and unit[b].stat['hp'] > 0 and unit[a].stat['hp'] > 0 then
 					printstr('←← COUNTER ←←', 3, 'top')
 					local hp_diff_2 = 0
-					if unit[a].log.hp[turn-1] ~= nil and unit[a].log.hp[turn] ~= nil then
-						hp_diff_2 = unit[a].log.hp[turn-1] - unit[a].log.hp[turn]
+					if unit[a].log['hp'][turn-1] ~= nil and unit[a].log['hp'][turn] ~= nil then
+						hp_diff_2 = unit[a].log['hp'][turn-1] - unit[a].log['hp'][turn]
 					end
 
 					if ismissed(b) == 0 then
@@ -254,9 +254,9 @@ function showstatus()
 				printstr('OK', 4, 'top') else printstr('NIL', 4, 'top')
 			end
 		end
-		if unit[b].hp <= 0 then
+		if unit[b].stat['hp'] <= 0 then
 			printstr(unit[b].name .. ' DIED', 2, 'top')
-		elseif unit[a].hp <= 0 then
+		elseif unit[a].stat['hp'] <= 0 then
 			printstr(unit[a].name .. ' DIED', 2, 'top')
 		end
 		--/top
@@ -266,16 +266,16 @@ function showstatus()
 
 		if ismissed(a) == 0 then
 			if unit[a].crit == 0 then
-				printstr('→ ' .. unit[a].log.att[turn-1] .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. math.floor(unit[a].log.sad[turn-1]) .. ' SAD', 2, 'bttm')
+				printstr('→ ' .. unit[a].log['att'][turn-1] .. ' ATT − ' .. unit[b].log['def'][turn-1] .. ' DEF − ' .. math.floor(unit[a].log['sad'][turn-1]) .. ' SAD', 2, 'bttm')
 			else
-				printstr('→ ' .. unit[a].log.att[turn-1]*3 .. ' ATT − ' .. unit[b].log.def[turn-1] .. ' DEF − ' .. math.floor(unit[a].log.sad[turn-1]) .. ' SAD', 2, 'bttm')
+				printstr('→ ' .. unit[a].log['att'][turn-1]*3 .. ' ATT − ' .. unit[b].log['def'][turn-1] .. ' DEF − ' .. math.floor(unit[a].log['sad'][turn-1]) .. ' SAD', 2, 'bttm')
 			end
-			if iscounter() and unit[b].hp > 0 and unit[a].hp > 0 then
+			if iscounter() and unit[b].stat['hp'] > 0 and unit[a].stat['hp'] > 0 then
 				if ismissed(b) == 0 then
 					if unit[b].crit == 0 then
-						printstr('← ' .. unit[b].log.att[turn-1] .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. math.floor(unit[b].log.sad[turn-1]) .. ' SAD', 1, 'bttm')
+						printstr('← ' .. unit[b].log['att'][turn-1] .. ' ATT − ' .. unit[a].log['def'][turn-1] .. ' DEF − ' .. math.floor(unit[b].log['sad'][turn-1]) .. ' SAD', 1, 'bttm')
 					else
-						printstr('← ' .. unit[b].log.att[turn-1]*3 .. ' ATT − ' .. unit[a].log.def[turn-1] .. ' DEF − ' .. math.floor(unit[b].log.sad[turn-1]) .. ' SAD', 1, 'bttm')
+						printstr('← ' .. unit[b].log['att'][turn-1]*3 .. ' ATT − ' .. unit[a].log['def'][turn-1] .. ' DEF − ' .. math.floor(unit[b].log['sad'][turn-1]) .. ' SAD', 1, 'bttm')
 					end
 				end
 			end
@@ -303,15 +303,15 @@ end
 
 function iscounter()
 	local a,b = whosemove()
-	return unit[b].def >= unit[a].def
+	return unit[b].stat['def'] >= unit[a].stat['def']
 end
 
 function ismissed(num)
 	--local a,b = whosemove()
-	if not unit[num].log.miss[turn] then
-		local irr = unit[num].irr / 10
+	if not unit[num].log['miss'][turn] then
+		local irr = unit[num].stat['irr'] / 10
 		unit[num].miss = chance(irr)
-		unit[num].log.miss[turn] = true
+		unit[num].log['miss'][turn] = true
 	end
 	return unit[num].miss
 end
@@ -325,7 +325,7 @@ function love.keypressed(key)
 			showresult = false
 		end
 		local a,b = whosemove()
-		if unit[a].hp > 0 and unit[b].hp > 0 then
+		if unit[a].stat['hp'] > 0 and unit[b].stat['hp'] > 0 then
 			if ismissed(a) == 0 then
 				writelogs_before(a,b)
 				attack(a,b)
@@ -378,8 +378,8 @@ function love.draw()
 		love.graphics.print('hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log['hp'][i], 20, 180+14*i)
 	end
 
-	for i,v in ipairs(unit[a].log.hp) do
-		love.graphics.print('/hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log.hp[i], 180, 180+14*i)
+	for i,v in ipairs(unit[a].log['hp']) do
+		love.graphics.print('/hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log['hp'][i], 180, 180+14*i)
 	end]]
 
 	love.graphics.print('att: ' .. unit[a].stat['att'], 20, 180-14)
@@ -388,10 +388,10 @@ function love.draw()
 		love.graphics.print('log[' .. i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
 	end
 
-	love.graphics.print('/att: ' .. unit[a].att, 180, 180-14)
+	love.graphics.print('/att: ' .. unit[a].stat['att'], 180, 180-14)
 
-	for i,v in ipairs(unit[a].log.att) do
-		love.graphics.print('/log[' .. i .. ']: ' .. unit[a].log.att[i], 180, 180+14*i)
+	for i,v in ipairs(unit[a].log['att']) do
+		love.graphics.print('/log[' .. i .. ']: ' .. unit[a].log['att'][i], 180, 180+14*i)
 	end
 
 
@@ -405,18 +405,18 @@ function love.draw()
 		love.graphics.print('log[' .. i .. ']: ' .. unit[b].log['att'][i], 20+400, 180+14*i)
 	end
 
-	love.graphics.print('/att: ' .. unit[b].att, 180+400, 180-14)
+	love.graphics.print('/att: ' .. unit[b].stat['att'], 180+400, 180-14)
 
-	for i,v in ipairs(unit[b].log.att) do
-		love.graphics.print('/log[' .. i .. ']: ' .. unit[b].log.att[i], 180+400, 180+14*i)
+	for i,v in ipairs(unit[b].log['att']) do
+		love.graphics.print('/log[' .. i .. ']: ' .. unit[b].log['att'][i], 180+400, 180+14*i)
 	end
 
 	--for i,v in ipairs(unit[a].stat['att']) do
 		--love.graphics.print('att.[' .. a .. ']: ' .. unit[a].stat['att'], 20+200, 180+14)
 	--end
 
-	--for i,v in ipairs(unit[a].att) do
-		--love.graphics.print('/att.[' .. a .. ']: ' .. unit[a].att, 180+200, 180+14)
+	--for i,v in ipairs(unit[a].stat['att']) do
+		--love.graphics.print('/att.[' .. a .. ']: ' .. unit[a].stat['att'], 180+200, 180+14)
 	--end
 
 	--love.graphics.print('logs', 20, 180-14)
@@ -442,15 +442,15 @@ function love.draw()
 		printstr(unit[a].name .. 'FORGOT TO TAKE MEDICATIONS', 14, 'top')
 		printstr('ALL STATS DEBUFFED FOR 3 TURNS', 15, 'top')
 		
-		if unit[a].log.def[turn] ~= unit[a].log.def[turn-1] then
+		if unit[a].log['def'][turn] ~= unit[a].log['def'][turn-1] then
 			printstr('log ~=', 16, 'top')
 		end
 
-		if unit[a].def ~= unit[a].log.def[turn-1] then
+		if unit[a].stat['def'] ~= unit[a].log['def'][turn-1] then
 			printstr('def ~=', 17, 'top')
 		end
 
-		if unit[a].irr ~= unit[a].log.irr[turn-1] then
+		if unit[a].stat['irr'] ~= unit[a].log['irr'][turn-1] then
 			printstr('irr not ==', 19, 'top')
 		end
 	end]]
