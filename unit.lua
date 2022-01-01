@@ -3,15 +3,15 @@ Unit = Object:extend()
 function Unit:new(num, name)
 	self.id = num
 	self.width = comm:getWidth('H') * 7
-	if num == 0--[[num < 4]] then
+	if num < 4 then
 		self.x = 0
-		--self.y = 0 + 100*num
-	else
+		self.y = 0 + 100*num
+	elseif num >= 4 then
 		self.x = window_width - self.width
-		--self.y = 0 + 100*(num-4)
+		self.y = 0 + 100*(num-4)
 	end
 
-	self.y = 0
+	--self.y = 0
 	
 	self.name = name
 

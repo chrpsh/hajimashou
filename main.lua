@@ -9,7 +9,7 @@ function love.load()
 
 	unit = {}
 	
-	for i=0,1 do
+	for i=0,7 do
 		unit[i] = Unit(i, givemename())
 	end
 
@@ -144,16 +144,19 @@ function nextturn()
 end
 
 function whosemove()
-	--local a = math.random(0,3)
-	--local b = math.random(4,7)
+	--[[local a = math.random(0,1)
+	local b = math.random(2,3)
+	
 	if (turn % 2 == 0) then
-		--return a,b
-		--return math.random(0,3), math.random(4,7)
-		return 1, 0
+		return a, b
 	else
-		--return math.random(4,7), math.random(0,3)
-		--return b,a
-		return 0, 1
+		return b, a
+	end]]
+
+	if (turn % 2 == 0) then
+		return 4, 0
+	else
+		return 0, 4
 	end
 end
 
@@ -373,7 +376,30 @@ function love.draw()
 		love.graphics.print('att.[' .. a .. '][' .. turn-i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
 	end]]
 
-	love.graphics.print(unit[a].name, 20, 180-14*3)
+	--[[if (5%1==0) then
+		love.graphics.print('1%1 ; true', 200, 180-14*3)
+	else
+		love.graphics.print('1%1 ; false', 200, 180-14*3)
+	end
+
+	if (6%2==0) then
+		love.graphics.print('2%2 ; true', 200, 180-14*2)
+	else
+		love.graphics.print('2%2 ; false', 200, 180-14*2)
+	end
+
+	if (7%3==0) then
+		love.graphics.print('3%3 ; true', 200, 180-14*1)
+	else
+		love.graphics.print('3%3 ; false', 200, 180-14*1)
+	end
+
+	if (8%4==0) then
+		love.graphics.print('4%4 ; true', 200, 180)
+	else
+		love.graphics.print('4%4 ; false', 200, 180)
+	end]]
+	--love.graphics.print(unit[a].name, 20, 180-14*3)
 	--[[for i,v in ipairs(unit[a].log['hp']) do
 		love.graphics.print('hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log['hp'][i], 20, 180+14*i)
 	end
@@ -382,7 +408,7 @@ function love.draw()
 		love.graphics.print('/hp.[' .. a .. '][' .. i .. ']: ' .. unit[a].log['hp'][i], 180, 180+14*i)
 	end]]
 
-	love.graphics.print('att: ' .. unit[a].stat['att'], 20, 180-14)
+	--[[love.graphics.print('att: ' .. unit[a].stat['att'], 20, 180-14)
 
 	for i,v in ipairs(unit[a].log['att']) do
 		love.graphics.print('log[' .. i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
@@ -409,7 +435,7 @@ function love.draw()
 
 	for i,v in ipairs(unit[b].log['att']) do
 		love.graphics.print('/log[' .. i .. ']: ' .. unit[b].log['att'][i], 180+400, 180+14*i)
-	end
+	end]]
 
 	--for i,v in ipairs(unit[a].stat['att']) do
 		--love.graphics.print('att.[' .. a .. ']: ' .. unit[a].stat['att'], 20+200, 180+14)
