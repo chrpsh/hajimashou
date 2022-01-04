@@ -2,6 +2,13 @@ function love.load()
 	Object = require "classic"
 	tick = require "tick"
 	require "unit"
+	require "tts"
+
+	--ffi = require("ffi")
+	--ffi.cdef[[
+	--int printf(const char *fmt, ...);
+	--]]
+	--ffi.C.printf("Hello %s!", "world")
 
 	comm = love.graphics.newFont("trnsgndr.ttf", 14)
 	window_width = love.graphics.getWidth()
@@ -9,9 +16,15 @@ function love.load()
 
 	unit = {}
 	
-	for i=0,7 do
+	for i=0,1 do
 		unit[i] = Unit(i, givemename())
 	end
+
+	--[[for i=0,7 do
+		unit[i] = Unit(i, givemename())
+	end]]
+
+	said = {}
 
 	turn = 1
 	showresult = false
@@ -153,10 +166,16 @@ function whosemove()
 		return b, a
 	end]]
 
-	if (turn % 2 == 0) then
+	--[[if (turn % 2 == 0) then
 		return 4, 0
 	else
 		return 0, 4
+	end]]
+
+	if (turn % 2 == 0) then
+		return 1, 0
+	else
+		return 0, 1
 	end
 end
 
@@ -216,6 +235,8 @@ function showstatus()
 					printstr(hp_diff .. ' DMG (CRITICAL)', 1, 'top')
 					set_color('white')
 				end
+
+				--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage')
 
 				if iscounter() and unit[b].stat['hp'] > 0 and unit[a].stat['hp'] > 0 then
 					printstr('←← COUNTER ←←', 3, 'top')
@@ -332,6 +353,7 @@ function love.keypressed(key)
 			if ismissed(a) == 0 then
 				writelogs_before(a,b)
 				attack(a,b)
+				--saythething()
 				writelogs_after(a,b)
 				if iscounter() then
 					if ismissed(b) == 0 then
@@ -351,19 +373,135 @@ function love.keypressed(key)
 				writelogs_after(a,b)
 			end
 			showresult = true
-			if turn == 7 then
+			--if not said[turn] then 
+				--saythething()
+			--	said[turn] = true
+			--end
+			--if turn == 7 then
 				--until later
 				--randomevent()
-			end
+			--end
 		end
+		say_make()
+		--tts:say(say_make())
+		--saythething()
 	end
 end
 
 
 function love.update(dt)
 	tick.update(dt)
+	--ffi.C.printf("Hello %s!", "world")
 end
 
+function say_make()
+	local a,b = whosemove()
+	local str = ''
+	local str_counter = ''
+	str = say_att(a,b,str)
+	if iscounter() then
+		str = str .. ' however ' .. say_att(b,a,str_counter)
+	end
+	--return str
+	tts:say(str)
+end
+
+function say_att(a,b,str)
+	--local str = unit[a].name
+	local dmg = 0
+
+	if unit[b].log['hp'][turn-1] ~= nil and unit[b].log['hp'][turn] ~= nil then
+		dmg = unit[b].log['hp'][turn-1] - unit[b].log['hp'][turn]
+	end
+
+	str = str .. unit[a].name
+
+	if ismissed(a) == 0 then
+		str = str .. ' attacks '
+		str = str .. unit[b].name
+		str = str .. ' and deals ' .. dmg .. ' damage '
+		if unit[a].crit == 1 then
+			str = str .. ' and its critical '
+		end
+	else
+		str = str .. ' missed '
+	end
+	return str
+end
+
+function saythething()
+	--if said[turn] == nil then
+		local a,b = whosemove()
+		local hp_diff = 0
+		if unit[b].log['hp'][turn-1] ~= nil and unit[b].log['hp'][turn] ~= nil then
+			hp_diff = unit[b].log['hp'][turn-1] - unit[b].log['hp'][turn]
+		end
+
+		local hp_diff_2 = 0
+		if unit[a].log['hp'][turn-1] ~= nil and unit[a].log['hp'][turn] ~= nil then
+			hp_diff_2 = unit[a].log['hp'][turn-1] - unit[a].log['hp'][turn]
+		end
+
+		local str
+
+		if ismissed(a) == 0 then
+			if unit[a].crit ~= 1 then
+				if iscounter() then
+					if ismissed(b) == 0 then
+						if unit[b].crit ~= 1 then
+							str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage, however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage'
+							--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage, however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage')
+						else
+							str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage, however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage which is really darn lot if you ask me'
+							--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage, however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage which is really darn lot if you ask me')
+						end
+					else
+						str = unit[b].name .. ' misses, what a pitty lil creature'
+						--tts:say(unit[b].name .. ' misses, what a pitty lil creature')
+					end
+				else
+					str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage'
+					--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage')
+				end
+			else
+				if iscounter() then
+					if ismissed(b) == 0 then
+						if unit[b].crit ~= 1 then
+							str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which hecking lot), however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage'
+							--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which hecking lot), however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage')
+						else
+							str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which hecking lot), however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage which is also a hecking heck lot of hecking heck darn pain'
+							--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which hecking lot), however, ' .. unit[b].name .. ' counters with ' .. hp_diff_2 .. 'damage which is also a hecking heck lot of hecking heck darn pain')
+						end
+					else
+						str = unit[b].name .. ' misses, such a loser you say, cant handle a single blow like what the heck'
+						--tts:say(unit[b].name .. ' misses, such a loser you say, cant handle a single blow like what the heck')
+					end
+				else
+					str = unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which is much as heck)'
+					--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage (critical, which is much as heck)')
+				end
+			end
+			--[[if not said[turn] then
+			tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage')
+			said[turn] = true
+			end]]
+			--[[if iscounter() then
+				if unit[b].crit ~= 1 then
+					tts:say('however, ' .. unit[b].name .. ' counters')
+				else
+					tts:say(unit[b].name .. ' attacks ' .. unit[a].name .. ' and deals ' .. hp_diff_2 .. 'damage (critical)')
+				end
+			end]]
+		else
+			str = unit[a].name .. ' misses'
+			--tts:say(unit[a].name .. ' misses')
+		end
+		--said[turn] = true
+	--end
+
+	tts:say(str)
+end
 
 function love.draw()
 	for i=0,table.getn(unit) do
