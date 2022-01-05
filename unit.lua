@@ -24,8 +24,8 @@ function Unit:new(num, name)
 
 	self.stat = {}
 	self.stat['hp'] = 30
-	self.stat['att'] = math.random(3,5)
-	self.stat['def'] = math.random(1,2)
+	self.stat['att'] = math.random(4,7)
+	self.stat['def'] = math.random(2,3)
 	self.stat['sad'] = math.random(0,1)
 	self.stat['irr'] = 1
 	self.stat['anx'] = 0

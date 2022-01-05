@@ -238,7 +238,7 @@ function showstatus()
 
 				--tts:say(unit[a].name .. ' attacks ' .. unit[b].name .. ' and deals ' .. hp_diff .. 'damage')
 
-				if iscounter() and unit[b].stat['hp'] > 0 and unit[a].stat['hp'] > 0 then
+				if (iscounter() and unit[b].stat['hp'] > 0) or (iscounter() and unit[a].stat['hp'] > 0) then
 					printstr('←← COUNTER ←←', 3, 'top')
 					local hp_diff_2 = 0
 					if unit[a].log['hp'][turn-1] ~= nil and unit[a].log['hp'][turn] ~= nil then
@@ -397,34 +397,41 @@ end
 function say_make()
 	local a,b = whosemove()
 	local str = ''
-	local str_counter = ''
+	local str_2 = ''
 	str = say_att(a,b,str)
-	if iscounter() then
-		str = str .. ' however ' .. say_att(b,a,str_counter)
+	local ismakesense = ismissed(a) == 0 and iscounter() and unit[b].stat['hp'] > 0
+	if ismakesense then
+		str = str .. ' however ' .. say_att(b,a,str_2,true)
 	end
-	--return str
 	tts:say(str)
 end
 
-function say_att(a,b,str)
-	--local str = unit[a].name
+function say_att(a,b,str,dodge)
 	local dmg = 0
-
 	if unit[b].log['hp'][turn-1] ~= nil and unit[b].log['hp'][turn] ~= nil then
 		dmg = unit[b].log['hp'][turn-1] - unit[b].log['hp'][turn]
 	end
-
-	str = str .. unit[a].name
-
+	str = str .. unit[a].name	
 	if ismissed(a) == 0 then
-		str = str .. ' attacks '
-		str = str .. unit[b].name
+		if not dodge then
+			str = str .. ' attacks '
+			str = str .. unit[b].name
+		else
+			str = str .. ' counters '
+		end
 		str = str .. ' and deals ' .. dmg .. ' damage '
 		if unit[a].crit == 1 then
 			str = str .. ' and its critical '
 		end
+		if unit[b].stat['hp'] <= 0 then
+			str = str .. unit[b].name
+			str = str .. ' dies, his life is over now '
+		end
 	else
-		str = str .. ' missed '
+		if dodge then
+			str = str .. ' counters '
+		end
+		str = str .. ' misses '
 	end
 	return str
 end
