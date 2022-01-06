@@ -127,6 +127,7 @@ function getsad(x)
 end
 
 function getanxious(a,b)
+	--need only one argument
 	unit[b].log['anx'][turn-1] = unit[b].stat['anx']
 	unit[b].stat['anx'] = unit[b].stat['anx'] + 1
 	unit[b].log['anx'][turn] = unit[b].stat['anx']
@@ -434,6 +435,41 @@ function say_att(a,b,str,dodge)
 		str = str .. ' misses '
 	end
 	return str
+
+--novelty
+	--[[
+	if ismissed(a) == 0 then
+		if not dodge then
+			str = str .. ' attacks '
+			str = str .. unit[b].name
+		else
+			str = str .. ' hit back cause now they are strong and can defend themselves as lot as this agressive asshole in front of them '
+		end
+		if unit[a].crit == 1 then
+			str = str .. ' and so lucky that with a miserable chance of some percent it is critical and hecking lot, like thrice more lot '
+			str = str .. ' still '
+			--str = str .. ' and its critical '
+		end
+		if not dodge then
+			str = str .. ' they use all their power to neglect the blow, but still recieve ' .. dmg .. ' damage which is a lot of pain but could be worse if ' .. unit[a].name .. ' wouldnt be so sad '
+		else
+			str = str .. ' they use all their power and anger to feal ' .. dmg .. ' damage, but can you be like a little less that sad ass '
+		end
+		--str = str .. ' with ' .. dmg .. ' damage '
+		--str = str .. ' wich could be better if they would have been not that sad'
+		if unit[b].stat['hp'] <= 0 then
+			str = str .. unit[b].name
+			str = str .. ' dies, his life is over now '
+		end
+	else
+		if dodge then
+			str = str .. ' tried to hit in return '
+			str = str .. ' but so irritated, that they miss '
+		else
+			str = str .. ' tried to perform an attack, but they are so irritated, that they miss '
+		end
+	end
+	]]
 end
 
 function saythething()
