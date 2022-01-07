@@ -16,9 +16,13 @@ function love.load()
 
 	unit = {}
 	
-	for i=0,1 do
+	--[[for i=0,1 do
 		unit[i] = Unit(i, givemename())
-	end
+	end]]
+
+	unit[0] = Unit(0, 'M1s7Y')
+	unit[1] = Unit(1, '8R0CK')
+	
 
 	--[[for i=0,7 do
 		unit[i] = Unit(i, givemename())
@@ -321,6 +325,7 @@ function givemename()
 
 	return char .. '-' .. num .. '-' .. num_last
 
+
 	--caps letter
 	--string.char(math.random(65,90))
 	--
@@ -435,6 +440,30 @@ function say_att(a,b,str,dodge)
 		str = str .. ' misses '
 	end
 	return str
+
+--novelty 2
+	--[[if ismissed(a) == 0 then
+		if not dodge then
+			str = str .. ' attacks '
+			str = str .. unit[b].name
+		else
+			str = str .. ' hit back '
+		end
+		str = str .. ' and deals ' .. dmg .. ' damage '
+		if unit[a].crit == 1 then
+			str = str .. ' and with a miserable chance its critical, which makes it three times stronger '
+			str = str .. unit[b].name .. ' is more irritated now, he probably gonna mess up next one '
+		end
+		if unit[b].stat['hp'] <= 0 then
+			str = str .. unit[b].name
+			str = str .. ' dies, his life is over now '
+		end
+	else
+		if dodge then
+			str = str .. ' defends himself and hit ass in returnб иге '
+		end
+		str = str .. ' misses, he sad and weak now'
+	end]]
 
 --novelty
 	--[[
