@@ -35,7 +35,7 @@ local function download_file(string, file_name)
 end
 
 -- Say the given string
-function tts:say(string)
+function tts:say(string, plz)
 
     if (not tts.sources[string]) then
         if (not love.filesystem.exists("cache")) then
@@ -52,5 +52,15 @@ function tts:say(string)
         tts.sources[string]:setLooping(false)
     end
 
-    tts.sources[string]:play()
+    --tts.sources[string]:play()
+
+    if plz then
+        return tts.sources[string]:isPlaying()
+    end
+
+    --[[if tts.sources[string]:isPlaying() then
+        love.graphics.print('yes', 300, 400)
+    else
+        love.graphics.print('now', 300, 400)
+    end]]
 end

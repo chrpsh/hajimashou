@@ -30,6 +30,8 @@ function love.load()
 
 	said = {}
 
+	--nowplaying = false
+
 	turn = 1
 	showresult = false
 
@@ -409,7 +411,8 @@ function say_make()
 	if ismakesense then
 		str = str .. ' however ' .. say_att(b,a,str_2,true)
 	end
-	tts:say(str)
+	--tts:say(str)
+	wha = tts:say(str, true)
 end
 
 function say_att(a,b,str,dodge)
@@ -582,6 +585,19 @@ function love.draw()
 
 	local a,b = whosemove()
 
+	if wha then 
+			love.graphics.print('yes', 300, 400)
+		else
+			love.graphics.print('no', 300, 400)
+		end
+
+	--[[if tts.active ~= nil then
+		if tts.active then 
+			love.graphics.print('yes', 300, 400)
+		else
+			love.graphics.print('no', 300, 400)
+		end
+	end]]
 	--[[for i,v in ipairs(unit[a].log['att']) do
 		love.graphics.print('att.[' .. a .. '][' .. turn-i .. ']: ' .. unit[a].log['att'][i], 20, 180+14*i)
 	end]]
