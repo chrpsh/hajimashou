@@ -1,13 +1,15 @@
 Unit = Object:extend()
 
 function Unit:new(num, string)
-	--1, 2, 3
 	self.id = num
-	self.stats = {math.random(0,99),math.random(0,99),math.random(0,99)}
 	self.name = string
-	self.x = 0
-	self.y = 0 + window_height/2*num
-	self.lh = 22
+	self.st = {}
+	self.st['nausea'] = math.random(0,2)
+	self.st['confusion'] = math.random(1,3)
+	self.st['insomnia'] = math.random(1,2)
+	self.line = 20
+	self.x = 0 + window_width/2*num
+	self.y = -2
 end
 
 
@@ -18,7 +20,15 @@ end
 function Unit:draw()
 	love.graphics.setFont(txt)
 	love.graphics.print(self.name, self.x, self.y)
-	love.graphics.print('CONFUSION ' .. self.stats[1], self.x, self.y+self.lh)
-	love.graphics.print('ANXIETY ' .. self.stats[2], self.x, self.y+self.lh*2)
-	love.graphics.print('NAUSEA ' .. self.stats[3], self.x, self.y+self.lh*3)
+	love.graphics.print('NAUSEA ' .. self.st['nausea'], self.x, self.y+self.line)
+	love.graphics.print('CONFUSION ' .. self.st['confusion'], self.x, self.y+self.line*2)
+	love.graphics.print('INSOMNIA ' .. self.st['insomnia'], self.x, self.y+self.line*3)
+
+	--[[local w = txt:getWidth('CONFUSION') + 10
+	love.graphics.print('NAUSEA', self.x, self.y+self.line)
+	love.graphics.print(self.st['nausea'], self.x+w, self.y+self.line)
+	love.graphics.print('CONFUSION', self.x, self.y+self.line*2)
+	love.graphics.print(self.st['confusion'], self.x+w, self.y+self.line*2)
+	love.graphics.print('INSOMNIA', self.x, self.y+self.line*3)
+	love.graphics.print(self.st['insomnia'], self.x+w, self.y+self.line*3)]]
 end
