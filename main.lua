@@ -83,13 +83,30 @@ function love.keypressed(key)
 
 				if hov == 1 then
 					--confusion -1, nausea -1
-					log.str[log.count] = stat[2] .. ' −1 ' .. stat[1] .. ' −1 '
+					--log.str[log.count] = stat[2] .. ' −1 ' .. stat[1] .. ' −1 '
 					--if unit[turn].st['nausea'] > 0 then
-						unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
+					--	unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
 					--end
 					--if unit[turn].st['confusion'] > 0 then
-						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1
+					--	unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1
 					--end
+
+					--work
+					--[[	log.str[log.count] = stat[2] .. ' −1 ' .. stat[1] .. ' −1 '
+						unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
+						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1 		]]
+					--/work
+
+					if chance(.3) == 1 then
+						--log.count = log.count + 1
+						if chance(.5) == 1 then
+							log.str[log.count] = 'CRIT'
+						else
+							log.str[log.count] = 'MISS'
+						end
+					else
+						log.str[log.count] = 'OK'
+					end
 				elseif hov == 2 then
 					--actually feels really good
 					log.str[log.count] = 'IT FEELS REALLY GOOD'
@@ -134,6 +151,14 @@ function love.keypressed(key)
 		
 		
 		--actions[1]:changed(turn)
+	end
+end
+
+function chance(x)
+	if math.random() < x then
+		return 1
+	else
+		return 0
 	end
 end
 
