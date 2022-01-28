@@ -21,6 +21,8 @@ function love.load()
     log = {}
     log.str = {}
     log.count = 0
+    log.magic = 0
+    log.work = 0
 
     turn = 0
 
@@ -101,35 +103,57 @@ function love.keypressed(key)
 						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1 		]]
 					--/work
 
+					if log.work < 2 then
+					--if unit[turn].work < 2 then
+						--just you see
+						--they'll work
+						--just wait
+						--it needs some time
+						--you need to wait
+						--be patient
+						--not everything happens overnight
+						--take it for some months and we'll see
+						--or not
+
+						--you need to wait
+						log.str[log.count] = 'NOTHING HAPPENS'
+						log.count = log.count + 1
+						log.str[log.count] = stat[2] .. ' +1 '
+						unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1 
+						--unit[turn].work = unit[turn].work + 1
+						log.work = log.work + 1
+					else
+						if chance(.3) == 1 then
+							log.str[log.count] = 'THEY WORK FOR SOME REASON'
+							--they work
+							--confusion -1, nausea -1
+							log.count = log.count + 1
+							log.str[log.count] = stat[1] .. ' −1 ' .. stat[2] .. ' −1 '
+							unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
+							unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1 
+						--log.count = log.count + 1
+						else
+							if chance(.5) == 1 then
+								log.str[log.count] = 'GOT SEROTONINE SYNDROME'
+								--serotonine syndrome
+								--nausea +1, insomnia +1
+								log.count = log.count + 1
+								log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
+								unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+								unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
+							else
+								log.str[log.count] = 'IS TOLERANT'
+								--tolerance
+								--confusion +1
+								log.count = log.count + 1
+								log.str[log.count] = stat[2] .. ' +1 '
+								unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1 
+							end
+						end
+					end
 
 					--→→→→→→→→→→→→→→→→→→→→→→→→
-					if chance(.3) == 1 then
-						--log.count = log.count + 1
-						if chance(.5) == 1 then
-							log.str[log.count] = 'GOT SEROTONINE SYNDROME'
-							--serotonine syndrome
-							--nausea +1, insomnia +1
-							log.count = log.count + 1
-							log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
-							unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-							unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
-						else
-							log.str[log.count] = 'TOLERANT'
-							--tolerance
-							--confusion +1
-							log.count = log.count + 1
-							log.str[log.count] = stat[2] .. ' +1 '
-							unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1 
-						end
-					else
-						log.str[log.count] = 'THEY WORK FOR SOME REASON'
-						--they work
-						--confusion -1, nausea -1
-						log.count = log.count + 1
-						log.str[log.count] = stat[1] .. ' −1 ' .. stat[2] .. ' −1 '
-						unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
-						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1 
-					end
+					
 					--→→→→→→→→→→→→→→→→→→→→→→→→
 
 				elseif hov == 2 then
@@ -139,12 +163,33 @@ function love.keypressed(key)
 
 					--→→→→→→→→→→→→→→→→→→→→→→→→
 					--first 2 times
+					if log.magic < 2 then
+					--if unit[turn].magic < 2 then
 						log.str[log.count] = 'SURPRISINGLY FEELS GOOD'
 						--it feels good
 						--confusion +1
 						log.count = log.count + 1
 						log.str[log.count] = stat[2] .. ' +1 '
 						unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1
+						--unit[turn].magic = unit[turn].magic + 1
+						log.magic = log.magic + 1
+					else
+						log.str[log.count] = 'OH IT WAS JUST A SIDE EFFECT'
+						--it feels good
+						--confusion +1
+						log.count = log.count + 1
+						log.str[log.count] = 'FEELS NOTHING'
+						log.count = log.count + 1
+						log.str[log.count] = stat[2] .. ' +1 ' .. stat[1] .. ' +1 '
+						unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1
+						unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+						--log.count = log.count + 1
+						--log.str[log.count] = '&&&&&&&SURPRISINGLY FEELS GOOD'
+						--log.count = log.count + 1
+						--log.str[log.count] = stat[2] .. ' +1 '
+						--unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1
+						--unit[turn].magic = unit[turn].magic + 1
+					end
 					--after
 						--miss
 						--log.str[log.count] = 'MISS'
@@ -155,8 +200,18 @@ function love.keypressed(key)
 
 					--→→→→→→→→→→→→→→→→→→→→→→→→
 					if chance(.3) == 1 then
+						log.str[log.count] = 'NO SUFFER BUT FOR HOW LONG'
+						--log.count = log.count + 1
+						--log.str[log.count] = 'BUT FOR HOW LONG'
+						--eases pain
+						--confusion -1, insomina -1
+						log.count = log.count + 1
+						log.str[log.count] = stat[2] .. ' −1 ' .. stat[3] .. ' −1 '
+						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1
+						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
+					else
 						if chance(.5) == 1 then
-							log.str[log.count] = 'UNFORTUNATELY IT’S BENZODIAZEPINE'
+							log.str[log.count] = 'SUDDENLY HECKING STRONG'
 							log.count = log.count + 1
 							log.str[log.count] = 'FELL ASLEEP'
 							--oh no, it's benzodiazepine
@@ -167,23 +222,13 @@ function love.keypressed(key)
 							unit[turn].st['confusion'] = unit[turn].st['confusion'] + 1
 							unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
 						else
-							log.str[log.count] = 'FEELS NOTHING, AS EXPECTED'
+							log.str[log.count] = 'FEELS NOTHING AS EXPECTED'
 							--feel nothing
 							--insomnia +1
 							log.count = log.count + 1
 							log.str[log.count] = stat[3] .. ' +1 '
 							unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1
 						end
-					else
-						log.str[log.count] = 'SUFFERS LESS, BUT HOW LONG'
-						--log.count = log.count + 1
-						--log.str[log.count] = 'BUT FOR HOW LONG'
-						--eases pain
-						--confusion -1, insomina -1
-						log.count = log.count + 1
-						log.str[log.count] = stat[2] .. ' −1 ' .. stat[3] .. ' −1 '
-						unit[turn].st['confusion'] = unit[turn].st['confusion'] - 1
-						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
 					end
 					--→→→→→→→→→→→→→→→→→→→→→→→→
 
@@ -213,7 +258,10 @@ function love.keypressed(key)
 				elseif hov == 4 then
 					--can't
 					--just can't
-					log.str[log.count] = 'CAN’T, JUST CAN’T'
+					log.str[log.count] = 'CAN’T JUST CAN’T'
+					log.count = log.count + 1
+					log.str[log.count] = stat[1] .. ' +1 '
+					unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
 					
 					---↓↓↓ unnecessary ↓↓↓---
 					
@@ -324,6 +372,11 @@ function console()--num, hov)
 	--love.graphics.print('i	' .. check_i, window_width/12, window_height/2+22*4)
 
 	--love.graphics.print(table.getn(log.str), window_width/12, window_height/2+22)
+	love.graphics.print(table.getn(log.str), window_width/12, window_height/2+22*6)
+	love.graphics.print(log.count, window_width/12, window_height/2+22*7)
+	
+	love.graphics.print(log.magic, window_width/12, window_height/2+22*8)
+	love.graphics.print(log.work, window_width/12, window_height/2+22*9)
 
 	--local name = unit[num].name
 	--local str = {'TOOK MEDS', 'USED PREGABALIN', 'USED SEDATIVE', 'TRIED TO CRY'}
