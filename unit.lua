@@ -4,9 +4,9 @@ function Unit:new(num, string)
 	self.id = num
 	self.name = string
 	self.st = {}
-	self.st['nausea'] = math.random(0,2)
-	self.st['confusion'] = math.random(1,3)
-	self.st['insomnia'] = math.random(1,2)
+	self.st['nausea'] = math.random(3,5)
+	self.st['irritation'] = math.random(3,5)
+	self.st['insomnia'] = math.random(2,5)
 	self.line = 20
 	self.x = 0 --+ window_width/2*num
 	self.y = self.line*5*num -2
@@ -14,8 +14,11 @@ function Unit:new(num, string)
 
 	self.st.last = {}
 	self.st.last['nausea'] = self.st['nausea']
-	self.st.last['confusion'] = self.st['confusion']
+	self.st.last['irritation'] = self.st['irritation']
 	self.st.last['insomnia'] = self.st['insomnia']
+
+	self.magic = 0
+	self.work = 0
 
 	--self.st.change = {}
 end
@@ -39,10 +42,14 @@ end
 
 function Unit:draw()
 	love.graphics.setFont(txt)
-	love.graphics.print(self.arrw .. self.name, self.x, self.y)
-	love.graphics.print('NAUSEA ' .. self.st['nausea'] .. self:diff('nausea'), self.x, self.y+self.line)
-	love.graphics.print('CONFUSION ' .. self.st['confusion'] .. self:diff('confusion'), self.x, self.y+self.line*2)
-	love.graphics.print('INSOMNIA ' .. self.st['insomnia'] .. self:diff('insomnia'), self.x, self.y+self.line*3)
+	love.graphics.print(--[[self.arrw .. ]]self.name, self.x, self.y)
+	love.graphics.print('NAUSEA ' .. self.st['nausea'] --[[.. self:diff('nausea')]], self.x, self.y+self.line)
+	love.graphics.print('IRRITATION ' .. self.st['irritation'] --[[.. self:diff('confusion')]], self.x, self.y+self.line*2)
+	love.graphics.print('INSOMNIA ' .. self.st['insomnia'] --[[.. self:diff('insomnia')]], self.x, self.y+self.line*3)
+	
+
+	--love.graphics.print('MAGIC ' .. self.magic --[[.. self:diff('insomnia')]], self.x, 300+self.line*self.id)
+	--love.graphics.print('WAIT ' .. self.work --[[.. self:diff('insomnia')]], self.x, 300+self.line*2+self.line*self.id)
 
 
 	--[[local str = 'nausea'

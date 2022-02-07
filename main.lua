@@ -72,7 +72,7 @@ function love.keypressed(key)
 			log.str[log.count] = ''
 		end]]
 		log.count = log.count + 1
-		log.str[log.count] = '	' .. name .. ' ' .. act[hov]
+		log.str[log.count] = --[['	' ..]] name .. ' ' .. act[hov]
 		log.count = log.count + 1
 
 		if hov == 1 then
