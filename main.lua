@@ -3,6 +3,7 @@ function love.load()
 	tick = require "tick"
 	require "unit"
 	require "actions"
+	require "gradientmesh"
 	
 	txt = love.graphics.newFont("trnsgndr.ttf", 22)
 	window_width = love.graphics.getWidth()
@@ -33,6 +34,23 @@ function love.load()
     tmp_show = 0
 
 	math.randomseed(os.time())
+
+	tmp_void = 0
+
+	--tst gradient
+
+	--void = gradientMesh("vertical", {0, 0, 0, 0}, {0, 0, 0, 1})
+
+--[[	 rainbow = gradientMesh("horizontal",
+        {255, 0, 0},
+        {255, 255, 0},
+        {0, 255, 0},
+        {0, 255, 255},
+        {0, 0, 255},
+        {255, 0, 0}
+    )]]
+
+
 end
 
 function setColor(name)
@@ -65,7 +83,7 @@ function love.keypressed(key)
 		console_show = true
 		local hov = actions.hov
 		local name = unit[turn].name
-		local act = {'TAKES MEDS', 'USES PREGABALIN', 'USES SEDATIVE', 'TRIES TO CRY'}
+		local act = {'TAKES MEDS', --[['USES PREGABALIN', ]]'USES SEDATIVE', 'TRIES TO CRY'}
 		local stat = {'NAUSEA', 'IRRITATION', 'INSOMNIA'}
 		--[[if log.turn > 0 then
 			log.count = log.count + 1
@@ -76,20 +94,20 @@ function love.keypressed(key)
 		log.count = log.count + 1
 
 		if hov == 1 then
-			if log.work < 2 then
+			--[[if log.work < 1 then
 				log.str[log.count] = 'NOTHING HAPPENS'
 				--[[if turn == 1 then
 					log.count = log.count + 1
 					log.str[log.count] = 'OH YEAH MUST WAIT'
 				end]]
-				log.count = log.count + 1
+			--[[	log.count = log.count + 1
 				log.str[log.count] = stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
 				unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
 				unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
 				log.work = log.work + 1
-			else
-				if chance(.3) == 1 then
-					log.str[log.count] = 'THEY WORK'
+			else]]
+				if chance(.5) == 1 then
+					log.str[log.count] = 'NOTHING HAPPENS'
 					if log.work < 4 then
 						log.work = log.work + 1
 					end
@@ -102,21 +120,21 @@ function love.keypressed(key)
 					unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
 					unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1 
 				else
-					if chance(.5) == 1 then
-						log.str[log.count] = 'GOT SEROTONINE SYNDROME'
-						log.count = log.count + 1
-						log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
-						unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
-					else
-						log.str[log.count] = 'HAVE TOLERANCE'
+					--if chance(.5) == 1 then
+					log.str[log.count] = 'GOT SEROTONINE SYNDROME'
+					log.count = log.count + 1
+					log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
+					unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
+					--[[else
+						log.str[log.count] = 'NOTHING HAPPENS'
 						log.count = log.count + 1
 						log.str[log.count] = stat[2] .. ' +1 '
 						unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
-					end
+					end]]
 				end
-			end
-		elseif hov == 2 then
+			--end
+		--[[elseif hov == 2 then
 			if log.magic < 2 then
 				log.str[log.count] = 'FEELS GOOD'
 				log.count = log.count + 1
@@ -134,8 +152,8 @@ function love.keypressed(key)
 				log.str[log.count] = stat[2] .. ' +1 ' .. stat[1] .. ' +1 '
 				unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
 				unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-			end
-		elseif hov == 3 then
+			end]]
+		elseif hov == 2 then
 			if chance(.3) == 1 then
 				log.str[log.count] = 'EASES PAIN'
 				log.count = log.count + 1
@@ -144,7 +162,7 @@ function love.keypressed(key)
 				unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
 			else
 				if chance(.5) == 1 then
-					log.str[log.count] = 'SUDDENLY FELLS ASLEEP'
+					log.str[log.count] = 'SUDDENLY FALLS ASLEEP'
 					log.count = log.count + 1
 					log.str[log.count] = stat[2] .. ' +1 ' .. stat[3] .. ' −1 '
 					unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
@@ -156,19 +174,23 @@ function love.keypressed(key)
 					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1
 				end
 			end
-		elseif hov == 4 then
+		elseif hov == 3 then
 			log.str[log.count] = 'CAN’T JUST CAN’T'
 			log.count = log.count + 1
 			log.str[log.count] = stat[1] .. ' +1 '
 			unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
 		end
-		if log.turn > 2 then
-			if chance(.5) == 1 then
-				randomevent()
-			end
+		--if log.turn > 2 then
+		if chance(.7) == 1 then
+			randomevent()
 		end
+		--end
 		actions:changed(turn)
 		change_turn()
+
+		if log.count >= 30 then
+			tmp_void = tmp_void + 1
+		end
 	end
 end
 
@@ -187,11 +209,36 @@ function randomevent()
 	local stat = {'NAUSEA', 'IRRITATION', 'INSOMNIA'}
 	log.count = log.count + 1
 	--event 1
-	log.str[log.count] = '	ENCOUNTERS DIZZINESS'
-	log.count = log.count + 1
-	log.str[log.count] = stat[1] .. ' +3 ' .. stat[2] .. ' +2 '
-	unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1
-	unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
+	
+	local event = math.random(1,4)
+
+	if event == 1 then
+		log.str[log.count] = 'ENCOUNTERS DIZZINESS'
+		log.count = log.count + 1
+		log.str[log.count] = stat[1] .. ' +3 ' .. stat[2] .. ' +2 '
+		unit[turn].st['irritation'] = unit[turn].st['irritation'] +2
+		unit[turn].st['insomnia'] = unit[turn].st['insomnia'] +3
+	elseif event == 2 then
+		log.str[log.count] = 'GOT RANDOMLY IRRITATED'
+		log.count = log.count + 1
+		log.str[log.count] = stat[2] .. ' +3 '
+		unit[turn].st['irritation'] = unit[turn].st['irritation'] + 3
+	elseif event == 3 then
+		log.str[log.count] = 'FORGOT TO TAKE THEY’RE MEDS'
+		log.count = log.count + 1
+		log.str[log.count] = 'GOT SEROTONINE SYNDROME'
+		log.count = log.count + 1
+		log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
+		unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+		unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
+	elseif event == 4 then
+		log.str[log.count] = 'SLEPT FOR SIXTEEN HOURS'
+		log.count = log.count + 1
+		log.str[log.count] = '' .. stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
+		unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+		unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
+	end
+
 	--/event 1
 
 	--2
@@ -300,10 +347,24 @@ function love.update(dt)
 end
 
 
+function void(num)
+	local into = gradientMesh("vertical", {0, 0, 0, 0}, {0, 0, 0, 1})
+	local part = window_height / 8
+	local w = window_width
+	local h = window_height - part * num
+	local y = window_height - h
+	love.graphics.draw(into, 0, y, 0, w, h)
+
+	--local hh = 0
+	local part = window_height / 8
+	love.graphics.rectangle("fill", 0, y, w, part*num)	
+end
+
+
 function love.draw()
-	setColor('blue')
-	love.graphics.rectangle('fill', 0, 0, window_width/3, window_height)
-	setColor('white')
+	--setColor('blue')
+	--love.graphics.rectangle('fill', 0, 0, window_width/3, window_height)
+	--setColor('white')
 	unit[0]:draw()
 	unit[1]:draw()
 	
@@ -314,4 +375,12 @@ function love.draw()
 	if log.str[log.count] ~= nil then
 		console()
 	end
+
+	love.graphics.print(log.count, 10, 200)
+
+	if log.count >= 30 then
+		void(tmp_void)
+	end
+
+	--love.graphics.draw(rainbow, 0, 0, 0, love.graphics.getDimensions())
 end
