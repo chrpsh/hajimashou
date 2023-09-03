@@ -10,14 +10,20 @@ function love.load()
     window_height = love.graphics.getHeight()
 
     unit = {}
-    unit[0] = Unit(0,'FUJ1N0')
-    unit[1] = Unit(1,'KY0M070')
+    unit[0] = Unit(0,'SASHA')
+    unit[1] = Unit(1,'SASHA')
 
     actions = Actions() 
 	
 	--[[actions = {}
     actions[0] = Actions(0) 
     actions[1] = Actions(1)]]
+
+    bistro = love.audio.newSource("16feb_cut.mp3", "stream")
+    bistro:setLooping(true)
+    --bistro:setVolume(0.4)
+	--bistro:setPitch(.07)
+	--bistro:play()
 
     log = {}
     log.str = {}
@@ -36,6 +42,7 @@ function love.load()
 	math.randomseed(os.time())
 
 	tmp_void = 0
+	tmp_mul = .5
 
 	--tst gradient
 
@@ -79,122 +86,165 @@ function love.keypressed(key)
 	if key == "space" then
 		love.load()
 	elseif key == "return" then
-		actions.show = false
-		console_show = true
-		local hov = actions.hov
-		local name = unit[turn].name
-		local act = {'TAKES MEDS', --[['USES PREGABALIN', ]]'USES SEDATIVE', 'TRIES TO CRY'}
-		local stat = {'NAUSEA', 'IRRITATION', 'INSOMNIA'}
-		--[[if log.turn > 0 then
-			log.count = log.count + 1
-			log.str[log.count] = ''
-		end]]
-		log.count = log.count + 1
-		log.str[log.count] = --[['	' ..]] name .. ' ' .. act[hov]
-		log.count = log.count + 1
-
-		if hov == 1 then
-			--[[if log.work < 1 then
-				log.str[log.count] = 'NOTHING HAPPENS'
-				--[[if turn == 1 then
-					log.count = log.count + 1
-					log.str[log.count] = 'OH YEAH MUST WAIT'
-				end]]
-			--[[	log.count = log.count + 1
-				log.str[log.count] = stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
-				unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-				unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
-				log.work = log.work + 1
-			else]]
-				if chance(.5) == 1 then
-					log.str[log.count] = 'NOTHING HAPPENS'
-					if log.work < 4 then
-						log.work = log.work + 1
-					end
-					--[[if log.work == 4 then
-						log.count = log.count + 1
-						log.str[log.count] = 'I MEAN THAT WAS UNEXPECTED'
-					end]]
-					log.count = log.count + 1
-					log.str[log.count] = '' .. stat[1] .. ' −1 ' .. stat[2] .. ' −1 '
-					unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
-					unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1 
-				else
-					--if chance(.5) == 1 then
-					log.str[log.count] = 'GOT SEROTONINE SYNDROME'
-					log.count = log.count + 1
-					log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
-					unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
-					--[[else
-						log.str[log.count] = 'NOTHING HAPPENS'
-						log.count = log.count + 1
-						log.str[log.count] = stat[2] .. ' +1 '
-						unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
-					end]]
-				end
-			--end
-		--[[elseif hov == 2 then
-			if log.magic < 2 then
-				log.str[log.count] = 'FEELS GOOD'
+		if log.count < 74 then
+			actions.show = false
+			console_show = true
+			local hov = actions.hov
+			local name = unit[turn].name
+			local act = {'TAKES MEDS', --[['USES PREGABALIN', ]]'USES SEDATIVE', 'TRIES TO CRY'}
+			local stat = {'NAUSEA', 'IRRITATION', 'INSOMNIA'}
+			--[[if log.turn > 0 then
 				log.count = log.count + 1
-				log.str[log.count] = stat[2] .. ' +1 '
-				unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
-				log.magic = log.magic + 1
-			else
-				if not log.magic_comm_isshown then
-					log.str[log.count] = 'IT WAS JUST A SIDE EFFECT'
-					log.count = log.count + 1
-					log.magic_comm_isshown = true
-				end
-				log.str[log.count] = 'FEELS NOTHING'
-				log.count = log.count + 1
-				log.str[log.count] = stat[2] .. ' +1 ' .. stat[1] .. ' +1 '
-				unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
-				unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+				log.str[log.count] = ''
 			end]]
-		elseif hov == 2 then
-			if chance(.3) == 1 then
-				log.str[log.count] = 'EASES PAIN'
-				log.count = log.count + 1
-				log.str[log.count] = '' .. stat[2] .. ' −1 ' .. stat[3] .. ' −1 '
-				unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1
-				unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
-			else
-				if chance(.5) == 1 then
-					log.str[log.count] = 'SUDDENLY FALLS ASLEEP'
+			log.count = log.count + 1
+			log.str[log.count] = --[['	' ..]] name .. ' ' .. act[hov]
+			log.count = log.count + 1
+
+			if hov == 1 then
+				--[[if log.work < 1 then
+					log.str[log.count] = 'NOTHING HAPPENS'
+					--[[if turn == 1 then
+						log.count = log.count + 1
+						log.str[log.count] = 'OH YEAH MUST WAIT'
+					end]]
+				--[[	log.count = log.count + 1
+					log.str[log.count] = stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
+					unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+					unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
+					log.work = log.work + 1
+				else]]
+					if chance(.5) == 1 then
+						log.str[log.count] = 'NOTHING HAPPENS'
+						if log.work < 4 then
+							log.work = log.work + 1
+						end
+						--[[if log.work == 4 then
+							log.count = log.count + 1
+							log.str[log.count] = 'I MEAN THAT WAS UNEXPECTED'
+						end]]
+						log.count = log.count + 1
+						log.str[log.count] = '' .. stat[1] .. ' −1 ' .. stat[2] .. ' −1 '
+						unit[turn].st['nausea'] = unit[turn].st['nausea'] - 1
+						unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1 
+					else
+						--if chance(.5) == 1 then
+						log.str[log.count] = 'GOT SEROTONINE SYNDROME'
+						log.count = log.count + 1
+						log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
+						unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1
+						--[[else
+							log.str[log.count] = 'NOTHING HAPPENS'
+							log.count = log.count + 1
+							log.str[log.count] = stat[2] .. ' +1 '
+							unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
+						end]]
+					end
+				--end
+			--[[elseif hov == 2 then
+				if log.magic < 2 then
+					log.str[log.count] = 'FEELS GOOD'
 					log.count = log.count + 1
-					log.str[log.count] = stat[2] .. ' +1 ' .. stat[3] .. ' −1 '
+					log.str[log.count] = stat[2] .. ' +1 '
 					unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
-					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
+					log.magic = log.magic + 1
 				else
+					if not log.magic_comm_isshown then
+						log.str[log.count] = 'IT WAS JUST A SIDE EFFECT'
+						log.count = log.count + 1
+						log.magic_comm_isshown = true
+					end
 					log.str[log.count] = 'FEELS NOTHING'
 					log.count = log.count + 1
-					log.str[log.count] = stat[3] .. ' +1 '
-					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1
+					log.str[log.count] = stat[2] .. ' +1 ' .. stat[1] .. ' +1 '
+					unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
+					unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+				end]]
+			elseif hov == 2 then
+				if chance(.3) == 1 then
+					log.str[log.count] = 'EASES PAIN'
+					log.count = log.count + 1
+					log.str[log.count] = '' .. stat[2] .. ' −1 ' .. stat[3] .. ' −1 '
+					unit[turn].st['irritation'] = unit[turn].st['irritation'] - 1
+					unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
+				else
+					if chance(.5) == 1 then
+						log.str[log.count] = 'SUDDENLY FALLS ASLEEP'
+						log.count = log.count + 1
+						log.str[log.count] = stat[2] .. ' +1 ' .. stat[3] .. ' −1 '
+						unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1
+						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] - 1
+					else
+						log.str[log.count] = 'FEELS NOTHING'
+						log.count = log.count + 1
+						log.str[log.count] = stat[3] .. ' +1 '
+						unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1
+					end
 				end
+			elseif hov == 3 then
+				log.str[log.count] = 'CAN’T JUST CAN’T'
+				log.count = log.count + 1
+				log.str[log.count] = stat[1] .. ' +1 '
+				unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
 			end
-		elseif hov == 3 then
-			log.str[log.count] = 'CAN’T JUST CAN’T'
-			log.count = log.count + 1
-			log.str[log.count] = stat[1] .. ' +1 '
-			unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-		end
-		--if log.turn > 2 then
-		if chance(.7) == 1 then
-			randomevent()
-		end
-		--end
-		actions:changed(turn)
-		change_turn()
+			--if log.turn > 2 then
+			if chance(.7) == 1 and hov ~= 3 then
+				randomevent()
+			end
+			--end
+			actions:changed(turn)
+			change_turn()
 
-		if log.count >= 30 then
-			tmp_void = tmp_void + 1
+			if not bistro:isPlaying() then
+				bistro:play()
+			end
+
+			--[[if bistro:getPitch() <= .8 and log.count < 80 then
+				local p = bistro:getPitch() + .01 * log.count / 8
+				love.graphics.print(p, 10, 200+88)
+				bistro:setPitch(p)
+			--lpitch == 1 - .5 * log.count/4
+			end]]
+
+			--[[if bistro:getVolume() <= 2 and log.count < 80 then
+				local p = bistro:getVolume() + .015 * log.count / 8
+				love.graphics.print(p, 10, 200+88)
+				bistro:setVolume(p)
+			--lpitch == 1 - .5 * log.count/4
+			end]]
+
+			if log.count >= 30 then
+				tmp_void = tmp_void + 1
+				--if tmp_void >= 4 then
+					tmp_mul = tmp_mul * 1.9
+				--end
+			end
+		--[[elseif key == "p" then
+			if love.audio.getActiveSourceCount() ~= 0 then
+				bistro:stop()
+			else
+				bistro:play()
+				bistro:setPitch(.05)
+			end
+		]]
+		elseif log.count >= 74 then
+			love.load()
 		end
+	elseif key == "right" then
+		local x, y, z = love.audio.getVelocity()
+		--bistro:setVelocity( x+.1, y, z )
+		local p = bistro:getPitch()
+		bistro:setPitch(p+.01)
+	elseif key == "left" then
+		local x, y, z = love.audio.getVelocity()
+		--bistro:setVelocity( x+.1, y, z )
+		local p = bistro:getPitch()
+		bistro:setPitch(p-.01)
 	end
 end
 
-function randomevent()
+function randomevent(tookmeds)
 	--local str = {}
 	--[[str.def = {'SLEPT FOR 16 HOURS', 'JUST WANNA GO HOME', 'GETS RANDOMLY IRRITATED', 
 	'COULDNT SLEEP LAST NIGHT', 'DIZZY CANT EVEN WALK PROPERLY', 'TIRED JUST REALLY TIRED'}]]
@@ -209,8 +259,14 @@ function randomevent()
 	local stat = {'NAUSEA', 'IRRITATION', 'INSOMNIA'}
 	log.count = log.count + 1
 	--event 1
-	
-	local event = math.random(1,4)
+
+	local event
+
+	if actions.hov == 1 then
+		event = math.random(1,3)
+	else
+		event = math.random(1,4)
+	end
 
 	if event == 1 then
 		log.str[log.count] = 'ENCOUNTERS DIZZINESS'
@@ -224,6 +280,12 @@ function randomevent()
 		log.str[log.count] = stat[2] .. ' +3 '
 		unit[turn].st['irritation'] = unit[turn].st['irritation'] + 3
 	elseif event == 3 then
+		log.str[log.count] = 'SLEPT FOR SIXTEEN HOURS'
+		log.count = log.count + 1
+		log.str[log.count] = '' .. stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
+		unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
+		unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
+	elseif event == 4 then
 		log.str[log.count] = 'FORGOT TO TAKE THEY’RE MEDS'
 		log.count = log.count + 1
 		log.str[log.count] = 'GOT SEROTONINE SYNDROME'
@@ -231,12 +293,6 @@ function randomevent()
 		log.str[log.count] = stat[1] .. ' +1 ' .. stat[3] .. ' +1 '
 		unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
 		unit[turn].st['insomnia'] = unit[turn].st['insomnia'] + 1 
-	elseif event == 4 then
-		log.str[log.count] = 'SLEPT FOR SIXTEEN HOURS'
-		log.count = log.count + 1
-		log.str[log.count] = '' .. stat[1] .. ' +1 ' .. stat[2] .. ' +1 '
-		unit[turn].st['nausea'] = unit[turn].st['nausea'] + 1
-		unit[turn].st['irritation'] = unit[turn].st['irritation'] + 1 
 	end
 
 	--/event 1
@@ -351,13 +407,13 @@ function void(num)
 	local into = gradientMesh("vertical", {0, 0, 0, 0}, {0, 0, 0, 1})
 	local part = window_height / 8
 	local w = window_width
-	local h = window_height - part * num
-	local y = window_height - h
+	local h = part * num
+	local y = window_height - part * num
 	love.graphics.draw(into, 0, y, 0, w, h)
 
 	--local hh = 0
-	local part = window_height / 8
-	love.graphics.rectangle("fill", 0, y, w, part*num)	
+--	local part = window_height / 8
+--	love.graphics.rectangle("fill", 0, y, w, part*num)	
 end
 
 
@@ -376,11 +432,46 @@ function love.draw()
 		console()
 	end
 
-	love.graphics.print(log.count, 10, 200)
-
 	if log.count >= 30 then
-		void(tmp_void)
+		void(tmp_void+tmp_mul)
 	end
+
+	if log.count >= 74 then
+		bistro:stop()
+	--	love.graphics.print('TRY AGAIN', 0, window_height - 20 * 3 -2+20*2)
+	end
+
+	--pitch == 
+
+	--[[local x, y, z = love.audio.getVelocity()
+	love.graphics.print(x .. ' , ' .. y .. ' , ' .. z, 10, 200)
+	local p = bistro:getPitch()
+	love.graphics.print(p, 10, 200+22)]]
+
+	--love.graphics.print(log.count, 10, 200+66)
+
+	--70 / 76 / 80
+	--1 → .05
+	--×20
+	--80 / 20 → 4
+	--every 4 log.cound lower pitch by .05
+
+	--log.cout 0 / pitch 1
+	--log.count 80 / pitch .05
+
+	--80 == pitch-(20*.5)
+
+	--love.graphics.print(log.count, 10, 200)
+	--love.graphics.print(tmp_void, 10, 200+22)
+	--love.graphics.print(tmp_mul, 10, 200+44)
+	
+	--love.graphics.print(bistro:getVolume(), 10, 200+22)
+	--love.graphics.print(bistro:getPitch(), 10, 200+44)
+
+
+	--74
+	--11
+	--582.45~
 
 	--love.graphics.draw(rainbow, 0, 0, 0, love.graphics.getDimensions())
 end
