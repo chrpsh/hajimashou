@@ -4,7 +4,7 @@ function love.load()
 	require "unit"
 	require "actions"
 	require "gradientmesh"
-	require "intro"
+	--require "intro"
 	
 	txt = love.graphics.newFont("trnsgndr.ttf", 22)
 	window_width = love.graphics.getWidth()
@@ -15,7 +15,7 @@ function love.load()
     unit[1] = Unit(1,'SASHA')
 
     actions = Actions() 
-    intro = Intro()
+    --intro = Intro()
 	
 	--[[actions = {}
     actions[0] = Actions(0) 
@@ -82,7 +82,7 @@ end
 
 function love.keypressed(key)
 	actions:keyPressed(key)
-	intro:keyPressed(key)
+	--intro:keyPressed(key)
 	--actions[0]:keyPressed(key)
 	--actions[1]:keyPressed(key)
 
@@ -90,7 +90,7 @@ function love.keypressed(key)
 		if key == "space" then
 			love.load()
 		elseif key == "return" then
-			if intro.show >3 then
+			--if intro.show >3 then
 			--if not intro.show then
 				if log.count < 74 then
 					actions.show = false
@@ -242,7 +242,7 @@ function love.keypressed(key)
 				elseif log.count >= 74 then
 					love.load()
 				end
-			end
+			--end
 		elseif key == "right" then
 			local x, y, z = love.audio.getVelocity()
 			--bistro:setVelocity( x+.1, y, z )
@@ -365,7 +365,7 @@ function chance(x)
 end
 
 function change_turn()
-	if intro.show == 3 then
+	--if intro.show == 3 then
 		unit[turn].st.last['nausea'] = unit[turn].st['nausea']
 		unit[turn].st.last['irritation'] = unit[turn].st['irritation']
 		unit[turn].st.last['insomnia'] = unit[turn].st['insomnia']
@@ -377,7 +377,7 @@ function change_turn()
 		end
 
 		log.turn = log.turn + 1
-	end
+	--end
 end
 
 function console()
@@ -409,7 +409,7 @@ end
 function love.update(dt)
 	tick.update(dt)
 	actions:update(dt)
-	intro.update(dt)
+	--intro.update(dt)
 
 	if turn == 1 then
 		unit[1].arrw = '	'
@@ -444,9 +444,9 @@ function love.draw()
 	love.graphics.print('self.n			' .. intro.n, 10, 244)
 	love.graphics.print('self.show	' .. intro.show, 10, 266)]]
 
-	if intro.show <= 2 then 
+	--[[if intro.show <= 2 then 
 		intro:draw()
-	elseif intro.show >= 3 then
+	elseif intro.show >= 3 then]]
 
 		--setColor('blue')
 		--love.graphics.rectangle('fill', 0, 0, window_width/3, window_height)
@@ -471,7 +471,7 @@ function love.draw()
 		--	love.graphics.print('TRY AGAIN', 0, window_height - 20 * 3 -2+20*2)
 		end
 
-	end
+	--end
 
 	--pitch == 
 
